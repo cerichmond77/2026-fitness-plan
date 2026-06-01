@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6-Month Fitness Plan · May 31 – Nov 28, 2026</title>
+<style>
+  :root {
+    --bg: #FAF6EE;
+    --paper: #FFFEFB;
+    --ink: #2A2520;
+    --ink-soft: #6B645B;
+    --rule: #E5DDCE;
+    --accent: #2F4F3E;
+
+    --cardio: #C56C40;
+    --cardio-soft: #FBEADE;
+    --strength: #3D5C8C;
+    --strength-soft: #E4EAF4;
+    --yoga: #7A9B7E;
+    --yoga-soft: #E8F0E8;
+    --hiit: #A8423A;
+    --hiit-soft: #F7E0DD;
+    --deload: #B8924A;
+    --deload-soft: #F5ECD8;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+
+  /* ─── Masthead ─── */
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 52px;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .lede {
+    font-size: 17px;
+    max-width: 680px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ─── Phase strip ─── */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    margin: 40px 0 48px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .phase {
+    padding: 18px 16px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .phase:last-child { border-right: none; }
+  .phase-num {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .phase-month {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    margin: 6px 0 10px;
+    font-weight: 600;
+  }
+  .phase-detail {
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .phase-detail strong {
+    display: block;
+    font-weight: 600;
+  }
+  .phase-detail span {
+    color: var(--ink-soft);
+  }
+
+  /* ─── Legend + flag rule ─── */
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 56px;
+  }
+  .panel {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 22px 24px;
+  }
+  .panel h3 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 20px;
+    margin: 0 0 14px;
+    font-weight: 500;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .legend-item:last-child { margin-bottom: 0; }
+  .swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .legend-item .label {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .legend-item .desc {
+    color: var(--ink-soft);
+  }
+
+  .flag-rule {
+    background: #FFF8E8;
+    border: 1px solid #E8D89A;
+    border-left: 4px solid var(--deload);
+  }
+  .flag-rule h3 { color: #8B6E25; }
+  .flag-rule p {
+    margin: 0;
+    font-size: 14px;
+    color: #4A3F1F;
+  }
+  .flag-rule p + p { margin-top: 8px; }
+
+  /* ─── Calendar ─── */
+  .calendar {
+    margin-top: 24px;
+  }
+  .month {
+    margin-bottom: 56px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    break-inside: avoid;
+  }
+  .month-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .month-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 36px;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .month-title em {
+    color: var(--ink-soft);
+    font-style: italic;
+    font-size: 22px;
+    margin-left: 8px;
+  }
+  .month-summary {
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+  .month-summary strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 14px 0;
+    background: #F4EFE3;
+    border-bottom: 1px solid var(--rule);
+  }
+  .weekday {
+    text-align: center;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  .day {
+    aspect-ratio: 1 / 1.1;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 8px 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .day:nth-child(7n) { border-right: none; }
+  .day.outside {
+    background: #FBF8F1;
+  }
+  .day-num {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .day.outside .day-num {
+    color: #C5BDB0;
+  }
+  .day.today .day-num {
+    color: var(--accent);
+  }
+  .day.today .today-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: 4px;
+    color: var(--accent);
+  }
+
+  .workout {
+    flex: 1;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 9px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-height: 0;
+    text-align: left;
+    font-family: inherit;
+  }
+  .workout:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(42, 37, 32, 0.12);
+  }
+  .workout-type {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .workout-duration {
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+  .workout-title {
+    font-size: 11px;
+    line-height: 1.3;
+    margin-top: 2px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .workout.cardio    { background: var(--cardio-soft);    color: #6B3717; }
+  .workout.strength  { background: var(--strength-soft);  color: #1F3358; }
+  .workout.yoga      { background: var(--yoga-soft);      color: #2F4A33; }
+  .workout.hiit      { background: var(--hiit-soft);      color: #5B1A15; }
+  .workout.deload    {
+    background: var(--deload-soft);
+    color: #6B501C;
+    position: relative;
+  }
+  .workout.deload .deload-tag {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--deload);
+    color: white;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ─── Modal ─── */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(42, 37, 32, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 24px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--paper);
+    border-radius: 12px;
+    max-width: 520px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 32px 36px;
+    box-shadow: 0 24px 60px rgba(42, 37, 32, 0.25);
+  }
+  .modal-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .modal h2 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 32px;
+    font-weight: 500;
+    margin: 0 0 6px;
+    line-height: 1.1;
+  }
+  .modal-date {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .modal-block {
+    margin-bottom: 22px;
+  }
+  .modal-block h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  .modal-block p, .modal-block ul {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ink);
+    white-space: pre-line;
+  }
+  .modal-block ul {
+    padding-left: 18px;
+    white-space: normal;
+  }
+  .modal-block li {
+    margin-bottom: 4px;
+  }
+  .modal-close {
+    margin-top: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .modal-close:hover { background: var(--accent); }
+
+  .modal-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Exercise + video links inside the modal */
+  .modal-block a.ex-link {
+    color: var(--strength);
+    text-decoration: underline;
+    text-decoration-color: rgba(61, 92, 140, 0.35);
+    text-underline-offset: 2px;
+    font-weight: 600;
+  }
+  .modal-block a.ex-link:hover {
+    text-decoration-color: var(--strength);
+  }
+  .guided-video {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px 9px 12px;
+    background: var(--yoga-soft);
+    color: #2F4A33;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 16px;
+    border: 1px solid rgba(122, 155, 126, 0.3);
+    transition: transform 0.12s ease;
+  }
+  .guided-video:hover {
+    transform: translateY(-1px);
+    border-color: var(--yoga);
+  }
+  .guided-video::before {
+    content: "▶";
+    font-size: 10px;
+  }
+  .guided-video::after {
+    content: "↗";
+    font-size: 11px;
+    opacity: 0.6;
+  }
+  .modal-pill.cardio   { background: var(--cardio-soft);   color: #6B3717; }
+  .modal-pill.strength { background: var(--strength-soft); color: #1F3358; }
+  .modal-pill.yoga     { background: var(--yoga-soft);     color: #2F4A33; }
+  .modal-pill.hiit     { background: var(--hiit-soft);     color: #5B1A15; }
+  .modal-pill.deload   { background: var(--deload-soft);   color: #6B501C; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 820px) {
+    .container { padding: 32px 16px 48px; }
+    h1 { font-size: 36px; }
+    .phases { grid-template-columns: repeat(2, 1fr); }
+    .phase:nth-child(2n) { border-right: none; }
+    .phase { border-bottom: 1px solid var(--rule); }
+    .phase:nth-last-child(-n+2) { border-bottom: none; }
+    .meta-row { grid-template-columns: 1fr; }
+    .day { padding: 4px; }
+    .workout { padding: 4px; }
+    .workout-title { display: none; }
+    .month-title { font-size: 28px; }
+  }
+
+  /* ─── Print ─── */
+  @media print {
+    body { background: white; }
+    .container { padding: 0; max-width: none; }
+    .month { page-break-after: always; box-shadow: none; }
+    .workout { cursor: default; }
+    .workout:hover { transform: none; box-shadow: none; }
+    .modal-backdrop { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="masthead">
+    <div class="eyebrow">Six-Month Progressive Plan · May 31 – Nov 28, 2026</div>
+    <h1>From a twenty-minute jog<br>to <em>real, lasting fitness</em>.</h1>
+    <p class="lede">
+      A focused but sickness-aware build. Three days a week becomes four. Twenty
+      minutes becomes sixty. You hit forty-five minutes by month three, then
+      spend three months adding intensity — HIIT, supersets, sharper intervals.
+      Cardio, dumbbell strength, and yoga rotate every week, with a deload
+      every fourth week so your body keeps building instead of breaking down.
+      Click any day to see the workout.
+    </p>
+  </header>
+
+  <section class="phases" aria-label="Phase overview">
+    <div class="phase">
+      <div class="phase-num">01</div>
+      <div class="phase-month">June · Foundation</div>
+      <div class="phase-detail"><strong>3 days · 20 min</strong><span>Walk-jog intervals from day one</span></div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">02</div>
+      <div class="phase-month">July · Stretch Intervals</div>
+      <div class="phase-detail"><strong>3 days · 30 min</strong><span>Longer jog, heavier lifts</span></div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">03</div>
+      <div class="phase-month">August · Reach 45</div>
+      <div class="phase-detail"><strong>3 days · 45 min</strong><span>Sustained jog · 45-min target</span></div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">04</div>
+      <div class="phase-month">September · Add HIIT</div>
+      <div class="phase-detail"><strong>4 days · 45 min</strong><span>4th day + first HIIT</span></div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">05</div>
+      <div class="phase-month">October · Push Intensity</div>
+      <div class="phase-detail"><strong>4 days · 45–60 min</strong><span>HIIT established, supersets</span></div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">06</div>
+      <div class="phase-month">November · Peak</div>
+      <div class="phase-detail"><strong>4 days · 45–60 min</strong><span>Tabata + heavy supersets</span></div>
+    </div>
+  </section>
+
+  <section class="meta-row">
+    <div class="panel">
+      <h3>Workout types</h3>
+      <div class="legend-item">
+        <div class="swatch" style="background:var(--cardio)"></div>
+        <span><span class="label">Cardio</span> <span class="desc">— brisk walk, intervals, light jog</span></span>
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:var(--strength)"></div>
+        <span><span class="label">Strength</span> <span class="desc">— dumbbells + bodyweight</span></span>
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:var(--yoga)"></div>
+        <span><span class="label">Yoga / Mobility</span> <span class="desc">— recovery, flexibility, breath</span></span>
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:var(--hiit)"></div>
+        <span><span class="label">HIIT</span> <span class="desc">— short, high-intensity intervals</span></span>
+      </div>
+      <div class="legend-item">
+        <div class="swatch" style="background:var(--deload)"></div>
+        <span><span class="label">Deload week</span> <span class="desc">— every 4th week, ~70% effort</span></span>
+      </div>
+    </div>
+
+    <div class="panel flag-rule">
+      <h3>The yellow-flag rule</h3>
+      <p>If you wake up feeling run down, scratchy throat, unusually sore, or
+      poorly slept — swap the day for an easy yoga / mobility session, or just
+      take the dog for a longer walk.</p>
+      <p><strong>Never make it up.</strong> The deload weeks already account for
+      a missed session here and there. Pushing through illness is exactly what
+      sets you back six weeks.</p>
+    </div>
+  </section>
+
+  <div class="calendar" id="calendar"></div>
+
+</div>
+
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-eyebrow" id="modal-eyebrow"></div>
+    <h2 id="modal-title"></h2>
+    <div class="modal-date" id="modal-date"></div>
+
+    <a id="modal-video" class="guided-video" target="_blank" rel="noopener" style="display:none">Guided video session</a>
+
+    <div class="modal-block">
+      <h4>Session</h4>
+      <p id="modal-session"></p>
+    </div>
+    <div class="modal-block">
+      <h4>What to do</h4>
+      <ul id="modal-steps"></ul>
+    </div>
+    <div class="modal-block">
+      <h4>Notes</h4>
+      <p id="modal-notes"></p>
+    </div>
+
+    <button class="modal-close" id="modal-close-btn">Close</button>
+  </div>
+</div>
+
+<script>
+  // ─────────────────────────────────────────────────────────────────────
+  // Plan configuration. Each phase covers 4 weeks; the 4th is deload.
+  // workoutDays keys: 0=Sun, 1=Mon, ... 6=Sat
+  // ─────────────────────────────────────────────────────────────────────
+
+  const PROGRAM_START = new Date(2026, 4, 31); // Sun May 31, 2026 — first workout is Mon Jun 1
+  const TOTAL_WEEKS = 26;
+
+  // YouTube search URLs — return a relevant set of form-demo videos.
+  // Longer phrases listed first so "Romanian deadlift" matches before "deadlift" etc.
+  const EXERCISE_LINKS = {
+    'Bulgarian split squat':   'https://www.youtube.com/results?search_query=bulgarian+split+squat+form',
+    'Romanian deadlift':       'https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+form',
+    'Hanging knee raise':      'https://www.youtube.com/results?search_query=hanging+knee+raise',
+    'Weighted push-up':        'https://www.youtube.com/results?search_query=weighted+push+up',
+    'Single-leg bridge':       'https://www.youtube.com/results?search_query=single+leg+glute+bridge',
+    'Tricep extension':        'https://www.youtube.com/results?search_query=dumbbell+tricep+extension+form',
+    'Plank variations':        'https://www.youtube.com/results?search_query=plank+variations',
+    'Shoulder press':          'https://www.youtube.com/results?search_query=dumbbell+shoulder+press+form',
+    'Bulgarian split':         'https://www.youtube.com/results?search_query=bulgarian+split+squat+form',
+    'Goblet squat':            'https://www.youtube.com/results?search_query=goblet+squat+form',
+    'Romanian DL':             'https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+form',
+    'Reverse lunge':           'https://www.youtube.com/results?search_query=reverse+lunge+form',
+    'Renegade row':            'https://www.youtube.com/results?search_query=renegade+row+form',
+    'Lateral raise':           'https://www.youtube.com/results?search_query=lateral+raise+form',
+    'Pull-aparts':             'https://www.youtube.com/results?search_query=band+pull+apart',
+    'Glute bridge':            'https://www.youtube.com/results?search_query=glute+bridge+exercise',
+    'Dumbbell row':            'https://www.youtube.com/results?search_query=dumbbell+row+form',
+    'Bicep curl':              'https://www.youtube.com/results?search_query=dumbbell+bicep+curl+form',
+    'Calf raise':              'https://www.youtube.com/results?search_query=calf+raise+exercise',
+    'Dead bug':                'https://www.youtube.com/results?search_query=dead+bug+exercise',
+    'band rows':               'https://www.youtube.com/results?search_query=band+row+exercise',
+    'Push-up':                 'https://www.youtube.com/results?search_query=push+up+proper+form',
+    'DB row':                  'https://www.youtube.com/results?search_query=dumbbell+row+form',
+    'Plank':                   'https://www.youtube.com/results?search_query=plank+exercise+form'
+  };
+  // Sorted longest-first so multi-word names beat single-word substrings.
+  const EXERCISE_KEYS = Object.keys(EXERCISE_LINKS).sort((a, b) => b.length - a.length);
+
+  const PHASES = [
+    {
+      // ── Phase 1 — weeks 1-4, June — 3d × 20 min, walk-jog from day one ──
+      weeks: [1, 2, 3, 4],
+      deloadWeek: 4,
+      workouts: {
+        1: {
+          type: 'cardio', title: 'Walk-jog intervals', duration: 20,
+          session: '20 minutes — your first jogging intervals. Light shuffle pace, nothing fast.',
+          steps: [
+            '3 min brisk walk warm-up',
+            '15 min: jog 60 sec, walk 90 sec — repeat 6 times',
+            '2 min easy walk cool-down'
+          ],
+          notes: 'The jog should be barely faster than a walk — a light shuffle. RPE 5/10 on jog, 3/10 on walk. If jogging hurts a joint, sub stairs or hill walking.'
+        },
+        3: {
+          type: 'strength', title: 'Full-body dumbbells', duration: 20,
+          session: '20 minutes — dumbbell + bodyweight foundation. Pick a weight where the last 2 reps require effort.',
+          steps: [
+            'Goblet squat — 3 sets × 10',
+            'Dumbbell row — 3 × 10 per side',
+            'Push-up (knees OK) — 3 × 8',
+            'Shoulder press — 2 × 8',
+            'Dead bug — 2 × 10',
+            '45–60 sec rest between sets'
+          ],
+          notes: 'Movement quality first, but you should feel the last few reps. One rep in the tank.'
+        },
+        5: {
+          type: 'yoga', title: 'Sun salutation flow', duration: 20,
+          videoUrl: 'https://www.youtube.com/results?search_query=yoga+with+adriene+20+minute+sun+salutation+beginner',
+          session: '20 minutes — flowing sun salutations and standing poses.',
+          steps: [
+            'Cat-cow + neck rolls — 2 min',
+            'Sun salutation A × 4 rounds, slow — 8 min',
+            'Warrior 1, each side — 1 min × 2',
+            'Warrior 2, each side — 1 min × 2',
+            'Pigeon pose, each side — 1 min × 2',
+            'Savasana — 2 min'
+          ],
+          notes: 'YouTube search: "Yoga with Adriene 20 min flow" if you want a guided version. Breathe through the nose.'
+        }
+      }
+    },
+    {
+      // ── Phase 2 — weeks 5-8, July — 3d × 30 min, longer jog intervals ──
+      weeks: [5, 6, 7, 8],
+      deloadWeek: 8,
+      workouts: {
+        1: {
+          type: 'cardio', title: 'Longer walk-jog intervals', duration: 30,
+          session: '30 minutes — jog intervals now longer than walk intervals.',
+          steps: [
+            '5 min warm-up walk → light jog',
+            '20 min: jog 90 sec, walk 60 sec — repeat 8 times',
+            '5 min cool-down walk'
+          ],
+          notes: 'Jogging time now exceeds walking time inside the intervals. RPE 6/10. Keep the jog easy enough that you can string sentences together.'
+        },
+        3: {
+          type: 'strength', title: 'Full-body + RDL', duration: 30,
+          session: '30 minutes — add Romanian deadlifts and lateral raises, slower tempo.',
+          steps: [
+            'Goblet squat — 3 × 10',
+            'Romanian deadlift — 3 × 10 (new)',
+            'Dumbbell row — 3 × 10 per side',
+            'Push-up — 3 × max-3 reps',
+            'Shoulder press — 3 × 8',
+            'Lateral raise — 2 × 12 (new)',
+            'Plank — 2 × 30 sec',
+            '45 sec rest between sets'
+          ],
+          notes: 'Move slowly: 3 sec down, 1 sec up. Same load feels harder with slower tempo — that\'s the point.'
+        },
+        5: {
+          type: 'yoga', title: 'Vinyasa with balance', duration: 30,
+          videoUrl: 'https://www.youtube.com/results?search_query=30+minute+vinyasa+yoga+flow+balance+poses',
+          session: '30 minutes — flowing sequences with balance poses.',
+          steps: [
+            'Sun salutation A × 3 — 6 min',
+            'Sun salutation B × 3 — 8 min',
+            'Standing series: tree, triangle, half-moon — 8 min',
+            'Hip openers: pigeon, butterfly — 6 min',
+            'Savasana — 2 min'
+          ],
+          notes: "Balance poses are also nervous-system training. Don't skip them even if they feel silly."
+        }
+      }
+    },
+    {
+      // ── Phase 3 — weeks 9-12, August — 3d × 45 min, sustained jog (45-min target hit) ──
+      weeks: [9, 10, 11, 12],
+      deloadWeek: 12,
+      workouts: {
+        1: {
+          type: 'cardio', title: 'Sustained jog + pickups', duration: 45,
+          session: '45 minutes — your first sustained continuous-jog session. This is the milestone month.',
+          steps: [
+            '5 min warm-up: walk → easy jog',
+            '35 min: continuous easy jog with 4× 60 sec faster pickups sprinkled in',
+            '5 min cool-down: jog → walk'
+          ],
+          notes: 'If 35 min continuous feels too much, fall back to long intervals: jog 3 min / walk 1 min × 8. RPE 6/10 base, 7/10 on pickups. Hit any one of these three workouts at 45 min and you\'ve hit the milestone.'
+        },
+        3: {
+          type: 'strength', title: 'Full-body supersets', duration: 45,
+          session: '45 minutes — supersets compress more work into the same time and bump heart rate.',
+          steps: [
+            'A1/A2: Goblet squat + Romanian DL — 4 rounds × 10 each, no rest between',
+            'B1/B2: Push-up + Dumbbell row — 4 × 10 each',
+            'C1/C2: Shoulder press + Bicep curl — 3 × 10 each',
+            'D: Lateral raise — 3 × 12',
+            'E: Plank — 3 × 45 sec',
+            '45–60 sec rest between supersets'
+          ],
+          notes: 'Supersets do double duty — strength + cardio in the same session. The transition between A1 and A2 is the secret sauce; don\'t rest.'
+        },
+        5: {
+          type: 'yoga', title: 'Extended flow + mobility', duration: 45,
+          videoUrl: 'https://www.youtube.com/results?search_query=45+minute+yoga+flow+full+body+mobility',
+          session: '45 minutes — a longer recovery + flexibility session.',
+          steps: [
+            '10 min slow warm-up flow',
+            '15 min standing series (warriors 1/2/3, triangle, half-moon)',
+            '10 min hip + hamstring openers (pigeon, lizard, butterfly, frog)',
+            '5 min spinal twists + forward folds',
+            '5 min savasana'
+          ],
+          notes: 'After two harder days, this is essential. Treat it as a workout, not an afterthought.'
+        }
+      }
+    },
+    {
+      // ── Phase 4 — weeks 13-16, late Aug/Sept — 4d × 45 min, FIRST HIIT + 4th day ──
+      weeks: [13, 14, 15, 16],
+      deloadWeek: 16,
+      workouts: {
+        1: {
+          type: 'hiit', title: 'First HIIT — 40/90', duration: 45,
+          session: '45 minutes — your first true HIIT session. Two big shifts this month: a 4th workout day and intervals at real intensity.',
+          steps: [
+            '10 min warm-up: walk → jog → light dynamic stretches',
+            '25 min intervals: 8 rounds of 40 sec HARD + 90 sec recovery jog',
+            'Hard = fast jog, jumping jacks, mountain climbers, or marching high knees',
+            '10 min cool-down: easy walk + gentle stretching'
+          ],
+          notes: 'The 40 sec hard should feel like 7-8 / 10. If you can\'t keep form, scale the move down — burpees become squat-stand-ups, mountain climbers slow down. The timing is sacred, the move is flexible.'
+        },
+        2: {
+          type: 'strength', title: 'Upper body split', duration: 45,
+          session: '45 minutes — first dedicated upper-body day.',
+          steps: [
+            'Push-up — 4 × max-2 reps',
+            'Dumbbell row — 4 × 10 per side',
+            'Shoulder press — 4 × 8',
+            'Bicep curl — 3 × 10',
+            'Tricep extension — 3 × 10',
+            'Lateral raise — 3 × 12',
+            'Renegade row — 3 × 8 (new)',
+            'Plank — 3 × 60 sec',
+            '45–60 sec rest between sets'
+          ],
+          notes: 'Splitting strength means each session can push harder. Push the weight up where you can.'
+        },
+        4: {
+          type: 'cardio', title: 'Steady-state base', duration: 45,
+          session: '45 minutes — easy continuous cardio, the "engine" day.',
+          steps: [
+            '5 min warm-up walk → jog',
+            '35 min continuous easy-to-moderate jog (or brisk walk if jog is too much that day)',
+            '5 min cool-down walk'
+          ],
+          notes: 'Conversational pace — this balances the HIIT day. Easy mileage is what makes hard intervals possible. RPE 5/10.'
+        },
+        6: {
+          type: 'yoga', title: 'Long flow + recovery', duration: 45,
+          videoUrl: 'https://www.youtube.com/results?search_query=45+minute+yoga+recovery+flow',
+          session: '45 minutes — your recovery anchor after 3 work days.',
+          steps: [
+            '10 min slow flow warm-up',
+            '15 min standing series (warriors, triangle, half-moon)',
+            '10 min hip openers (pigeon, butterfly, frog)',
+            '5 min spinal twists + forward folds',
+            '5 min savasana'
+          ],
+          notes: 'This is non-negotiable. After 3 harder days, your body needs this. Take it slow.'
+        }
+      }
+    },
+    {
+      // ── Phase 5 — weeks 17-20, October — 4d × 45-60 min, HIIT ESTABLISHED ──
+      weeks: [17, 18, 19, 20],
+      deloadWeek: 20,
+      workouts: {
+        1: {
+          type: 'hiit', title: 'Sharper HIIT — 40/50', duration: 45,
+          session: '45 minutes — tighter recovery, more intervals.',
+          steps: [
+            '10 min warm-up: walk → jog → dynamic stretches',
+            '25 min: 10 rounds of 40 sec HARD + 50 sec recovery',
+            'Mix it up: jog sprints, burpees (modified OK), mountain climbers, squat jumps',
+            '10 min cool-down + stretching'
+          ],
+          notes: 'Shorter recovery is what makes this harder than last month — same hard interval, less time to breathe. RPE 7-8 / 10.'
+        },
+        2: {
+          type: 'strength', title: 'Upper supersets', duration: 60,
+          session: '60 minutes — full upper-body supersets, heavier loads.',
+          steps: [
+            'A1/A2: Push-up + Dumbbell row — 4 × 10 each, no rest between',
+            'B1/B2: Shoulder press + Bicep curl — 4 × 10 each',
+            'C1/C2: Tricep extension + Lateral raise — 4 × 12 each',
+            'D: Renegade row — 4 × 10',
+            'E: Plank variations (front, side L, side R) — 3 × 60 sec',
+            '60 sec rest between supersets'
+          ],
+          notes: 'Push the weight where you can. Last 2 reps of each set should be a real effort.'
+        },
+        4: {
+          type: 'cardio', title: 'Steady jog or hills', duration: 45,
+          session: '45 minutes — easy mileage OR hill repeats.',
+          steps: [
+            'Option A: 5 min warm + 35 min continuous easy jog + 5 min cool',
+            'Option B (hills): 5 min warm + 6× 90 sec hill repeats with 2 min walk recovery + 5 min cool'
+          ],
+          notes: 'Alternate the two options across weeks. Hills build power for HIIT; steady jog builds the engine.'
+        },
+        6: {
+          type: 'yoga', title: 'Long flow + lower mobility', duration: 60,
+          videoUrl: 'https://www.youtube.com/results?search_query=60+minute+yoga+flow+hip+mobility',
+          session: '60 minutes — your most important recovery day yet.',
+          steps: [
+            '15 min slow warm-up flow',
+            '15 min standing series (warriors, triangle, half-moon, dancer)',
+            '15 min deep hip + hamstring work (pigeon, lizard, butterfly, frog, splits prep)',
+            '10 min spinal twists + forward folds',
+            '5 min savasana'
+          ],
+          notes: 'You\'re working hard 3 other days. This day is sacred. Don\'t shortcut it.'
+        }
+      }
+    },
+    {
+      // ── Phase 6 — weeks 21-26, November — 4d × 45-60 min, PEAK (6 weeks) ──
+      weeks: [21, 22, 23, 24, 25, 26],
+      deloadWeek: 24,
+      workouts: {
+        1: {
+          type: 'hiit', title: 'Tabata mix', duration: 50,
+          session: '50 minutes — Tabata format for max intensity in short bursts.',
+          steps: [
+            '10 min warm-up: walk → jog → dynamic stretches',
+            '4 Tabata rounds (4 min each: 20 sec ON / 10 sec OFF × 8):',
+            '  → Round 1: jumping jacks',
+            '  → Round 2: squat-to-press with light DBs',
+            '  → Round 3: mountain climbers',
+            '  → Round 4: alternating reverse lunges',
+            '1 min standing rest between Tabata rounds',
+            '12 min cool-down + extensive stretching'
+          ],
+          notes: 'Tabata is brutal but short. The 20 sec ON should be MAX effort. Scale moves down — keep timing intact. RPE 8-9/10 on work intervals.'
+        },
+        2: {
+          type: 'strength', title: 'Heavy upper supersets', duration: 60,
+          session: '60 minutes — heavier loads, full upper-body supersets.',
+          steps: [
+            'A1/A2: Weighted push-up (or harder variation) + DB row heavy — 4 × 8 each',
+            'B1/B2: Shoulder press heavy + Bicep curl — 4 × 10 each',
+            'C1/C2: Tricep extension + Lateral raise — 4 × 12 each',
+            'D: Renegade row — 4 × 10',
+            'E: Pull-aparts / band rows — 3 × 15 (if you have a band)',
+            'F: Plank variations (front, side L, side R, ext arms) — 3 × 60 sec',
+            '60 sec rest between supersets'
+          ],
+          notes: 'Peak strength phase. Last 2 reps should be a grind. If you finish all sets clean, weight is too light.'
+        },
+        4: {
+          type: 'hiit', title: 'Pyramid HIIT', duration: 45,
+          session: '45 minutes — pyramid intervals build then shrink.',
+          steps: [
+            '10 min warm-up',
+            '25 min pyramid: 30/30 → 45/45 → 60/60 → 60/60 → 45/45 → 30/30 (work/rest seconds), 1 min rest between blocks',
+            'Mix work moves: jog sprints, burpees, kettlebell swings (or DB), squat jumps',
+            '10 min cool-down + extensive stretching'
+          ],
+          notes: 'Pyramids teach pacing — you have to hold back early so you have something left at the top. RPE 7-8/10.'
+        },
+        6: {
+          type: 'strength', title: 'Lower body / long yoga (alt)', duration: 60,
+          videoUrl: 'https://www.youtube.com/results?search_query=60+minute+yoga+flow+full+body',
+          session: '60 minutes — alternates lower-body strength and long yoga by week.',
+          steps: [
+            'EVEN weeks → LOWER STRENGTH (60 min):',
+            '  Goblet squat — 4 × 10 (heavy)',
+            '  Romanian deadlift — 4 × 10',
+            '  Reverse lunge — 4 × 10 per side',
+            '  Bulgarian split squat — 3 × 8 per side (new)',
+            '  Glute bridge / single-leg bridge — 3 × 15',
+            '  Calf raise — 3 × 15',
+            '  Hanging knee raise or Dead bug — 3 × 12',
+            '',
+            'ODD weeks → LONG YOGA (60 min): full flow with deep hip work, inversions optional, long savasana'
+          ],
+          notes: "Alternating gives your legs a break between cardio + lower-strength work. Pick one format if you'd rather not alternate."
+        }
+      }
+    }
+  ];
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Helpers
+  // ─────────────────────────────────────────────────────────────────────
+
+  function getPhaseIndex(week) {
+    return PHASES.findIndex(p => p.weeks.includes(week));
+  }
+
+  function dateKey(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Build date → workout map
+  // ─────────────────────────────────────────────────────────────────────
+
+  const workoutMap = new Map();
+
+  for (let week = 1; week <= TOTAL_WEEKS; week++) {
+    const weekStart = new Date(PROGRAM_START);
+    weekStart.setDate(PROGRAM_START.getDate() + (week - 1) * 7);
+
+    const phaseIdx = getPhaseIndex(week);
+    const phase = PHASES[phaseIdx];
+    const isDeload = week === phase.deloadWeek;
+
+    for (const [dayOfWeek, workoutBase] of Object.entries(phase.workouts)) {
+      const date = new Date(weekStart);
+      date.setDate(weekStart.getDate() + parseInt(dayOfWeek, 10));
+
+      const workout = Object.assign({}, workoutBase, { week, phaseIdx, isDeload });
+      if (isDeload) {
+        workout.duration = Math.round(workoutBase.duration * 0.7);
+        workout.deloadNote = `Deload week — ${workout.duration} min (about 70% of normal). Reduce sets by 1, weight by ~20%, intensity by ~30%. This is intentional pull-back, not weakness.`;
+      }
+      workoutMap.set(dateKey(date), workout);
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Render month grids
+  // ─────────────────────────────────────────────────────────────────────
+
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const WEEKDAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  function monthSummary(year, month) {
+    let cardio = 0, strength = 0, yoga = 0, hiit = 0, totalMin = 0;
+    for (const [key, w] of workoutMap.entries()) {
+      const [y, m] = key.split('-').map(Number);
+      if (y === year && m === month + 1) {
+        if (w.type === 'cardio') cardio++;
+        else if (w.type === 'strength') strength++;
+        else if (w.type === 'yoga') yoga++;
+        else if (w.type === 'hiit') hiit++;
+        totalMin += w.duration;
+      }
+    }
+    const parts = [];
+    if (cardio) parts.push(`${cardio} cardio`);
+    if (hiit) parts.push(`${hiit} HIIT`);
+    if (strength) parts.push(`${strength} strength`);
+    if (yoga) parts.push(`${yoga} yoga`);
+    return { parts, totalMin };
+  }
+
+  function renderMonth(year, month) {
+    const firstDay = new Date(year, month, 1);
+    const startWeekday = firstDay.getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayKey = dateKey(new Date());
+    const summary = monthSummary(year, month);
+
+    const section = el('section', 'month');
+
+    // header
+    const header = el('div', 'month-header');
+    const title = el('h2', 'month-title');
+    title.appendChild(document.createTextNode(MONTH_NAMES[month] + ' '));
+    title.appendChild(el('em', null, String(year)));
+    header.appendChild(title);
+
+    const summaryEl = el('div', 'month-summary');
+    if (summary.parts.length) {
+      summaryEl.appendChild(el('strong', null, summary.parts.join(' · ')));
+      summaryEl.appendChild(document.createElement('br'));
+      summaryEl.appendChild(el('span', null, `${summary.totalMin} total minutes`));
+    }
+    header.appendChild(summaryEl);
+    section.appendChild(header);
+
+    // weekday row
+    const weekdays = el('div', 'weekdays');
+    WEEKDAY_NAMES.forEach(w => weekdays.appendChild(el('div', 'weekday', w)));
+    section.appendChild(weekdays);
+
+    // days
+    const days = el('div', 'days');
+
+    for (let i = 0; i < startWeekday; i++) {
+      days.appendChild(el('div', 'day outside'));
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
+      const key = dateKey(date);
+      const cell = el('div', 'day');
+      if (key === todayKey) cell.classList.add('today');
+
+      const num = el('div', 'day-num', String(d));
+      if (key === todayKey) {
+        num.appendChild(el('span', 'today-tag', ' · today'));
+      }
+      cell.appendChild(num);
+
+      const workout = workoutMap.get(key);
+      if (workout) {
+        const w = el('button', `workout ${workout.type}` + (workout.isDeload ? ' deload' : ''));
+        const typeLabel = workout.type === 'hiit' ? 'HIIT' : workout.type;
+        w.appendChild(el('div', 'workout-type', typeLabel));
+        w.appendChild(el('div', 'workout-duration', `${workout.duration} min`));
+        w.appendChild(el('div', 'workout-title', workout.title));
+        if (workout.isDeload) {
+          w.appendChild(el('span', 'deload-tag', 'deload'));
+        }
+        w.addEventListener('click', () => openModal(key, workout));
+        cell.appendChild(w);
+      }
+
+      days.appendChild(cell);
+    }
+
+    const totalCells = startWeekday + daysInMonth;
+    const trailing = (7 - (totalCells % 7)) % 7;
+    for (let i = 0; i < trailing; i++) {
+      days.appendChild(el('div', 'day outside'));
+    }
+
+    section.appendChild(days);
+    return section;
+  }
+
+  const calendar = document.getElementById('calendar');
+  // June through November 2026 — program starts Monday, June 1
+  for (let month = 5; month <= 10; month++) {
+    calendar.appendChild(renderMonth(2026, month));
+  }
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Modal
+  // ─────────────────────────────────────────────────────────────────────
+
+  // Wraps any occurrences of known exercise names in the given text in
+  // anchor tags pointing at their EXERCISE_LINKS URL, appending the
+  // result to `container`. Falls back to a plain text node when no
+  // exercise name matches.
+  function appendLinkedText(container, text) {
+    let remaining = text;
+    while (remaining.length > 0) {
+      let earliest = { name: null, index: -1 };
+      for (const name of EXERCISE_KEYS) {
+        const idx = remaining.indexOf(name);
+        if (idx !== -1 && (earliest.index === -1 || idx < earliest.index)) {
+          earliest = { name, index: idx };
+        }
+      }
+      if (earliest.name === null) {
+        container.appendChild(document.createTextNode(remaining));
+        return;
+      }
+      if (earliest.index > 0) {
+        container.appendChild(document.createTextNode(remaining.substring(0, earliest.index)));
+      }
+      const a = document.createElement('a');
+      a.href = EXERCISE_LINKS[earliest.name];
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'ex-link';
+      a.textContent = earliest.name;
+      container.appendChild(a);
+      remaining = remaining.substring(earliest.index + earliest.name.length);
+    }
+  }
+
+  const modal = document.getElementById('modal');
+
+  function openModal(dateStr, workout) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+    const dateLabel = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+    const typeLabel = workout.type === 'hiit' ? 'HIIT' :
+                      workout.type.charAt(0).toUpperCase() + workout.type.slice(1);
+
+    const eyebrow = document.getElementById('modal-eyebrow');
+    eyebrow.replaceChildren();
+    eyebrow.appendChild(el('span', `modal-pill ${workout.type}`, typeLabel));
+    if (workout.isDeload) {
+      eyebrow.appendChild(el('span', 'modal-pill deload', 'Deload'));
+    }
+    eyebrow.appendChild(document.createTextNode(` Week ${workout.week} · Phase ${String(workout.phaseIdx + 1).padStart(2,'0')}`));
+
+    document.getElementById('modal-title').textContent = workout.title;
+    document.getElementById('modal-date').textContent = `${dayName}, ${dateLabel} · ${workout.duration} min`;
+    document.getElementById('modal-session').textContent = workout.session;
+
+    const videoEl = document.getElementById('modal-video');
+    if (workout.videoUrl) {
+      videoEl.href = workout.videoUrl;
+      videoEl.textContent = 'Guided video session';
+      videoEl.style.display = 'inline-flex';
+    } else {
+      videoEl.style.display = 'none';
+    }
+
+    const stepsEl = document.getElementById('modal-steps');
+    stepsEl.replaceChildren();
+    workout.steps.forEach(step => {
+      const li = document.createElement('li');
+      appendLinkedText(li, step);
+      stepsEl.appendChild(li);
+    });
+
+    const notes = workout.isDeload
+      ? workout.deloadNote + '\n\n' + workout.notes
+      : workout.notes;
+    document.getElementById('modal-notes').textContent = notes;
+
+    modal.classList.add('open');
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+  }
+
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+</body>
+</html>
