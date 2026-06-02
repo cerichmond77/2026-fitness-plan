@@ -1,0 +1,20 @@
+{
+  "name": "Fitness Plan 2026",
+  "short_name": "Fitness",
+  "description": "Six-month progressive fitness plan with built-in workout timers",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#2F4F3E",
+  "background_color": "#FAF6EE",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

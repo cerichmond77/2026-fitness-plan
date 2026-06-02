@@ -2,8 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6-Month Fitness Plan · May 31 – Nov 28, 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>6-Month Fitness Plan · Jun 1 – Nov 28, 2026</title>
+<meta name="theme-color" content="#2F4F3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Fitness">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icon.svg">
 <style>
   :root {
     --bg: #FAF6EE;
@@ -471,6 +479,290 @@
   .modal-pill.hiit     { background: var(--hiit-soft);     color: #5B1A15; }
   .modal-pill.deload   { background: var(--deload-soft);   color: #6B501C; }
 
+  /* ─── Timer ─── */
+  .start-timer-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 18px;
+    margin-top: 8px;
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .start-timer-btn:hover {
+    transform: translateY(-1px);
+    background: #1F3A2C;
+  }
+  .start-timer-btn::before {
+    content: "▶";
+    font-size: 13px;
+  }
+  .rest-timer-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    margin-top: 8px;
+    background: var(--strength-soft);
+    color: #1F3358;
+    border: 1px solid rgba(61, 92, 140, 0.3);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .rest-timer-btn::before {
+    content: "⏱";
+    font-size: 14px;
+  }
+
+  /* Timer pane that replaces modal contents while a workout runs */
+  .timer-pane {
+    display: none;
+    flex-direction: column;
+    gap: 18px;
+    padding: 4px 0 8px;
+  }
+  .timer-pane.active { display: flex; }
+  .modal.timer-mode .modal-eyebrow,
+  .modal.timer-mode #modal-title,
+  .modal.timer-mode .modal-date,
+  .modal.timer-mode #modal-video,
+  .modal.timer-mode .modal-block,
+  .modal.timer-mode #modal-close-btn { display: none; }
+  .modal.timer-mode .timer-pane { display: flex; }
+
+  .timer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .timer-header .meta-pill {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+
+  .timer-progress-overall {
+    height: 6px;
+    background: var(--rule);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .timer-progress-overall .fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.4s linear;
+  }
+
+  .timer-segment-name {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1.1;
+    margin: 6px 0 0;
+    color: var(--ink);
+    text-align: center;
+    min-height: 84px;
+  }
+
+  .timer-countdown {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 96px;
+    font-weight: 500;
+    line-height: 1;
+    text-align: center;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+  }
+  .timer-countdown.warn { color: var(--cardio); }
+
+  .timer-segment-bar {
+    height: 10px;
+    background: var(--rule);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .timer-segment-bar .fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.4s linear;
+  }
+  .timer-segment-bar.warn .fill { background: var(--cardio); }
+
+  .timer-up-next {
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 12px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .timer-up-next strong {
+    color: var(--ink);
+    font-weight: 600;
+    margin-left: 6px;
+  }
+
+  .timer-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .timer-btn {
+    padding: 14px 8px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .timer-btn:hover { background: var(--bg); }
+  .timer-btn.primary {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .timer-btn.primary:hover { background: #1F3A2C; }
+  .timer-btn.danger {
+    background: var(--paper);
+    color: var(--hiit);
+    border-color: rgba(168, 66, 58, 0.3);
+  }
+
+  .timer-end {
+    display: none;
+    text-align: center;
+    padding: 30px 0;
+  }
+  .timer-end.active { display: block; }
+  .timer-end .big {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 44px;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+  .timer-end p {
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+
+  /* Rest timer overlay (for strength workouts) */
+  .rest-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(42, 37, 32, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 24px;
+  }
+  .rest-overlay.open { display: flex; }
+  .rest-card {
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 36px 32px;
+    text-align: center;
+    max-width: 320px;
+    width: 100%;
+    box-shadow: 0 24px 60px rgba(42, 37, 32, 0.3);
+  }
+  .rest-card .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink-soft);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .rest-card .time {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 90px;
+    line-height: 1;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    margin: 0 0 18px;
+  }
+  .rest-card .buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  .rest-card button {
+    padding: 10px 16px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .rest-card button.primary {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+
+  /* Tiny "resume timer" pill that floats when a timer is running but modal is closed */
+  .resume-pill {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: var(--paper);
+    padding: 12px 18px;
+    border-radius: 999px;
+    box-shadow: 0 10px 28px rgba(42, 37, 32, 0.3);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 90;
+    border: none;
+    font-family: inherit;
+  }
+  .resume-pill.visible { display: inline-flex; }
+  .resume-pill .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--paper);
+    animation: pulse 1.5s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
   /* ─── Responsive ─── */
   @media (max-width: 820px) {
     .container { padding: 32px 16px 48px; }
@@ -484,6 +776,9 @@
     .workout { padding: 4px; }
     .workout-title { display: none; }
     .month-title { font-size: 28px; }
+    .modal { padding: 24px 22px; }
+    .timer-countdown { font-size: 78px; }
+    .timer-segment-name { font-size: 30px; min-height: 70px; }
   }
 
   /* ─── Print ─── */
@@ -501,7 +796,7 @@
 <div class="container">
 
   <header class="masthead">
-    <div class="eyebrow">Six-Month Progressive Plan · May 31 – Nov 28, 2026</div>
+    <div class="eyebrow">Six-Month Progressive Plan · Jun 1 – Nov 28, 2026</div>
     <h1>From a twenty-minute jog<br>to <em>real, lasting fitness</em>.</h1>
     <p class="lede">
       A focused but sickness-aware build. Three days a week becomes four. Twenty
@@ -587,7 +882,7 @@
 </div>
 
 <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
-  <div class="modal">
+  <div class="modal" id="modal-card">
     <div class="modal-eyebrow" id="modal-eyebrow"></div>
     <h2 id="modal-title"></h2>
     <div class="modal-date" id="modal-date"></div>
@@ -601,6 +896,8 @@
     <div class="modal-block">
       <h4>What to do</h4>
       <ul id="modal-steps"></ul>
+      <button id="start-timer-btn" class="start-timer-btn" style="display:none">Start workout</button>
+      <button id="rest-timer-btn" class="rest-timer-btn" style="display:none">Rest timer · 60 sec</button>
     </div>
     <div class="modal-block">
       <h4>Notes</h4>
@@ -608,8 +905,46 @@
     </div>
 
     <button class="modal-close" id="modal-close-btn">Close</button>
+
+    <!-- Timer pane (shown when modal has .timer-mode) -->
+    <div class="timer-pane" id="timer-pane">
+      <div class="timer-header">
+        <span id="timer-workout-label"></span>
+        <span class="meta-pill" id="timer-segment-position">1 / 1</span>
+      </div>
+      <div class="timer-progress-overall"><div class="fill" id="timer-overall-fill"></div></div>
+      <div class="timer-segment-name" id="timer-segment-name">—</div>
+      <div class="timer-countdown" id="timer-countdown">0:00</div>
+      <div class="timer-segment-bar" id="timer-segment-bar"><div class="fill" id="timer-segment-fill"></div></div>
+      <div class="timer-up-next" id="timer-up-next"></div>
+      <div class="timer-controls" id="timer-controls">
+        <button class="timer-btn" id="timer-pause-btn">Pause</button>
+        <button class="timer-btn" id="timer-skip-btn">Skip ▶</button>
+        <button class="timer-btn danger" id="timer-stop-btn">End</button>
+      </div>
+      <div class="timer-end" id="timer-end">
+        <div class="big">Workout complete</div>
+        <p>Nice work. Walk it off.</p>
+        <button class="timer-btn primary" id="timer-end-close">Close</button>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Rest timer overlay (independent, for strength) -->
+<div class="rest-overlay" id="rest-overlay">
+  <div class="rest-card">
+    <div class="label">Rest</div>
+    <div class="time" id="rest-time">1:00</div>
+    <div class="buttons">
+      <button id="rest-add-btn">+15s</button>
+      <button class="primary" id="rest-close-btn">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating resume pill when timer is running but modal is closed -->
+<button class="resume-pill" id="resume-pill"><span class="dot"></span><span id="resume-pill-label">Resume timer</span></button>
 
 <script>
   // ─────────────────────────────────────────────────────────────────────
@@ -651,6 +986,9 @@
   // Sorted longest-first so multi-word names beat single-word substrings.
   const EXERCISE_KEYS = Object.keys(EXERCISE_LINKS).sort((a, b) => b.length - a.length);
 
+  // Repeat a template array N times — used to build interval timer sequences.
+  const rep = (arr, n) => Array.from({ length: n }, () => arr).flat();
+
   const PHASES = [
     {
       // ── Phase 1 — weeks 1-4, June — 3d × 20 min, walk-jog from day one ──
@@ -665,7 +1003,12 @@
             '15 min: jog 60 sec, walk 90 sec — repeat 6 times',
             '2 min easy walk cool-down'
           ],
-          notes: 'The jog should be barely faster than a walk — a light shuffle. RPE 5/10 on jog, 3/10 on walk. If jogging hurts a joint, sub stairs or hill walking.'
+          notes: 'The jog should be barely faster than a walk — a light shuffle. RPE 5/10 on jog, 3/10 on walk. If jogging hurts a joint, sub stairs or hill walking.',
+          timer: [
+            { name: 'Warm-up walk', sec: 180 },
+            ...rep([{ name: 'Jog', sec: 60 }, { name: 'Walk', sec: 90 }], 6),
+            { name: 'Cool-down walk', sec: 120 }
+          ]
         },
         3: {
           type: 'strength', title: 'Full-body dumbbells', duration: 20,
@@ -692,7 +1035,18 @@
             'Pigeon pose, each side — 1 min × 2',
             'Savasana — 2 min'
           ],
-          notes: 'YouTube search: "Yoga with Adriene 20 min flow" if you want a guided version. Breathe through the nose.'
+          notes: 'YouTube search: "Yoga with Adriene 20 min flow" if you want a guided version. Breathe through the nose.',
+          timer: [
+            { name: 'Cat-cow + neck rolls', sec: 120 },
+            { name: 'Sun salutation A — slow', sec: 480 },
+            { name: 'Warrior 1 — right', sec: 60 },
+            { name: 'Warrior 1 — left', sec: 60 },
+            { name: 'Warrior 2 — right', sec: 60 },
+            { name: 'Warrior 2 — left', sec: 60 },
+            { name: 'Pigeon — right', sec: 60 },
+            { name: 'Pigeon — left', sec: 60 },
+            { name: 'Savasana', sec: 120 }
+          ]
         }
       }
     },
@@ -709,7 +1063,12 @@
             '20 min: jog 90 sec, walk 60 sec — repeat 8 times',
             '5 min cool-down walk'
           ],
-          notes: 'Jogging time now exceeds walking time inside the intervals. RPE 6/10. Keep the jog easy enough that you can string sentences together.'
+          notes: 'Jogging time now exceeds walking time inside the intervals. RPE 6/10. Keep the jog easy enough that you can string sentences together.',
+          timer: [
+            { name: 'Warm-up walk → jog', sec: 300 },
+            ...rep([{ name: 'Jog', sec: 90 }, { name: 'Walk', sec: 60 }], 8),
+            { name: 'Cool-down walk', sec: 300 }
+          ]
         },
         3: {
           type: 'strength', title: 'Full-body + RDL', duration: 30,
@@ -737,7 +1096,14 @@
             'Hip openers: pigeon, butterfly — 6 min',
             'Savasana — 2 min'
           ],
-          notes: "Balance poses are also nervous-system training. Don't skip them even if they feel silly."
+          notes: "Balance poses are also nervous-system training. Don't skip them even if they feel silly.",
+          timer: [
+            { name: 'Sun salutation A × 3', sec: 360 },
+            { name: 'Sun salutation B × 3', sec: 480 },
+            { name: 'Standing series — tree, triangle, half-moon', sec: 480 },
+            { name: 'Hip openers — pigeon, butterfly', sec: 360 },
+            { name: 'Savasana', sec: 120 }
+          ]
         }
       }
     },
@@ -754,7 +1120,20 @@
             '35 min: continuous easy jog with 4× 60 sec faster pickups sprinkled in',
             '5 min cool-down: jog → walk'
           ],
-          notes: 'If 35 min continuous feels too much, fall back to long intervals: jog 3 min / walk 1 min × 8. RPE 6/10 base, 7/10 on pickups. Hit any one of these three workouts at 45 min and you\'ve hit the milestone.'
+          notes: 'If 35 min continuous feels too much, fall back to long intervals: jog 3 min / walk 1 min × 8. RPE 6/10 base, 7/10 on pickups. Hit any one of these three workouts at 45 min and you\'ve hit the milestone.',
+          timer: [
+            { name: 'Warm-up walk → jog', sec: 300 },
+            { name: 'Easy jog', sec: 300 },
+            { name: 'Pickup #1', sec: 60 },
+            { name: 'Easy jog', sec: 360 },
+            { name: 'Pickup #2', sec: 60 },
+            { name: 'Easy jog', sec: 360 },
+            { name: 'Pickup #3', sec: 60 },
+            { name: 'Easy jog', sec: 360 },
+            { name: 'Pickup #4', sec: 60 },
+            { name: 'Easy jog', sec: 480 },
+            { name: 'Cool-down walk', sec: 300 }
+          ]
         },
         3: {
           type: 'strength', title: 'Full-body supersets', duration: 45,
@@ -780,7 +1159,14 @@
             '5 min spinal twists + forward folds',
             '5 min savasana'
           ],
-          notes: 'After two harder days, this is essential. Treat it as a workout, not an afterthought.'
+          notes: 'After two harder days, this is essential. Treat it as a workout, not an afterthought.',
+          timer: [
+            { name: 'Slow warm-up flow', sec: 600 },
+            { name: 'Standing series — warriors, triangle, half-moon', sec: 900 },
+            { name: 'Hip + hamstring openers', sec: 600 },
+            { name: 'Twists + forward folds', sec: 300 },
+            { name: 'Savasana', sec: 300 }
+          ]
         }
       }
     },
@@ -794,11 +1180,16 @@
           session: '45 minutes — your first true HIIT session. Two big shifts this month: a 4th workout day and intervals at real intensity.',
           steps: [
             '10 min warm-up: walk → jog → light dynamic stretches',
-            '25 min intervals: 8 rounds of 40 sec HARD + 90 sec recovery jog',
+            '24 min intervals: 11 rounds of 40 sec HARD + 90 sec recovery jog',
             'Hard = fast jog, jumping jacks, mountain climbers, or marching high knees',
             '10 min cool-down: easy walk + gentle stretching'
           ],
-          notes: 'The 40 sec hard should feel like 7-8 / 10. If you can\'t keep form, scale the move down — burpees become squat-stand-ups, mountain climbers slow down. The timing is sacred, the move is flexible.'
+          notes: 'The 40 sec hard should feel like 7-8 / 10. If you can\'t keep form, scale the move down — burpees become squat-stand-ups, mountain climbers slow down. The timing is sacred, the move is flexible.',
+          timer: [
+            { name: 'Warm-up', sec: 600 },
+            ...rep([{ name: 'HARD · GO', sec: 40 }, { name: 'Recovery jog', sec: 90 }], 11),
+            { name: 'Cool-down', sec: 600 }
+          ]
         },
         2: {
           type: 'strength', title: 'Upper body split', duration: 45,
@@ -824,7 +1215,12 @@
             '35 min continuous easy-to-moderate jog (or brisk walk if jog is too much that day)',
             '5 min cool-down walk'
           ],
-          notes: 'Conversational pace — this balances the HIIT day. Easy mileage is what makes hard intervals possible. RPE 5/10.'
+          notes: 'Conversational pace — this balances the HIIT day. Easy mileage is what makes hard intervals possible. RPE 5/10.',
+          timer: [
+            { name: 'Warm-up walk → jog', sec: 300 },
+            { name: 'Continuous easy jog', sec: 2100 },
+            { name: 'Cool-down walk', sec: 300 }
+          ]
         },
         6: {
           type: 'yoga', title: 'Long flow + recovery', duration: 45,
@@ -837,7 +1233,14 @@
             '5 min spinal twists + forward folds',
             '5 min savasana'
           ],
-          notes: 'This is non-negotiable. After 3 harder days, your body needs this. Take it slow.'
+          notes: 'This is non-negotiable. After 3 harder days, your body needs this. Take it slow.',
+          timer: [
+            { name: 'Slow flow warm-up', sec: 600 },
+            { name: 'Standing series — warriors, triangle, half-moon', sec: 900 },
+            { name: 'Hip openers — pigeon, butterfly, frog', sec: 600 },
+            { name: 'Twists + forward folds', sec: 300 },
+            { name: 'Savasana', sec: 300 }
+          ]
         }
       }
     },
@@ -851,11 +1254,16 @@
           session: '45 minutes — tighter recovery, more intervals.',
           steps: [
             '10 min warm-up: walk → jog → dynamic stretches',
-            '25 min: 10 rounds of 40 sec HARD + 50 sec recovery',
+            '25 min: 17 rounds of 40 sec HARD + 50 sec recovery',
             'Mix it up: jog sprints, burpees (modified OK), mountain climbers, squat jumps',
             '10 min cool-down + stretching'
           ],
-          notes: 'Shorter recovery is what makes this harder than last month — same hard interval, less time to breathe. RPE 7-8 / 10.'
+          notes: 'Shorter recovery is what makes this harder than last month — same hard interval, less time to breathe. RPE 7-8 / 10.',
+          timer: [
+            { name: 'Warm-up', sec: 600 },
+            ...rep([{ name: 'HARD · GO', sec: 40 }, { name: 'Recovery', sec: 50 }], 17),
+            { name: 'Cool-down', sec: 600 }
+          ]
         },
         2: {
           type: 'strength', title: 'Upper supersets', duration: 60,
@@ -877,7 +1285,12 @@
             'Option A: 5 min warm + 35 min continuous easy jog + 5 min cool',
             'Option B (hills): 5 min warm + 6× 90 sec hill repeats with 2 min walk recovery + 5 min cool'
           ],
-          notes: 'Alternate the two options across weeks. Hills build power for HIIT; steady jog builds the engine.'
+          notes: 'Alternate the two options across weeks. Hills build power for HIIT; steady jog builds the engine.',
+          timer: [
+            { name: 'Warm-up', sec: 300 },
+            { name: 'Continuous easy jog', sec: 2100 },
+            { name: 'Cool-down', sec: 300 }
+          ]
         },
         6: {
           type: 'yoga', title: 'Long flow + lower mobility', duration: 60,
@@ -890,7 +1303,14 @@
             '10 min spinal twists + forward folds',
             '5 min savasana'
           ],
-          notes: 'You\'re working hard 3 other days. This day is sacred. Don\'t shortcut it.'
+          notes: 'You\'re working hard 3 other days. This day is sacred. Don\'t shortcut it.',
+          timer: [
+            { name: 'Slow warm-up flow', sec: 900 },
+            { name: 'Standing series — warriors, triangle, half-moon, dancer', sec: 900 },
+            { name: 'Deep hip + hamstring work', sec: 900 },
+            { name: 'Twists + forward folds', sec: 600 },
+            { name: 'Savasana', sec: 300 }
+          ]
         }
       }
     },
@@ -912,7 +1332,18 @@
             '1 min standing rest between Tabata rounds',
             '12 min cool-down + extensive stretching'
           ],
-          notes: 'Tabata is brutal but short. The 20 sec ON should be MAX effort. Scale moves down — keep timing intact. RPE 8-9/10 on work intervals.'
+          notes: 'Tabata is brutal but short. The 20 sec ON should be MAX effort. Scale moves down — keep timing intact. RPE 8-9/10 on work intervals.',
+          timer: [
+            { name: 'Warm-up', sec: 600 },
+            ...rep([{ name: 'Jumping jacks · GO', sec: 20 }, { name: 'Off', sec: 10 }], 8),
+            { name: 'Rest', sec: 60 },
+            ...rep([{ name: 'Squat-to-press · GO', sec: 20 }, { name: 'Off', sec: 10 }], 8),
+            { name: 'Rest', sec: 60 },
+            ...rep([{ name: 'Mountain climbers · GO', sec: 20 }, { name: 'Off', sec: 10 }], 8),
+            { name: 'Rest', sec: 60 },
+            ...rep([{ name: 'Reverse lunges · GO', sec: 20 }, { name: 'Off', sec: 10 }], 8),
+            { name: 'Cool-down', sec: 720 }
+          ]
         },
         2: {
           type: 'strength', title: 'Heavy upper supersets', duration: 60,
@@ -933,11 +1364,26 @@
           session: '45 minutes — pyramid intervals build then shrink.',
           steps: [
             '10 min warm-up',
-            '25 min pyramid: 30/30 → 45/45 → 60/60 → 60/60 → 45/45 → 30/30 (work/rest seconds), 1 min rest between blocks',
+            '25 min pyramid: 30/30 ×4 → 45/45 ×3 → 60/60 ×2 → 60/60 ×2 → 45/45 ×3 → 30/30 ×4, 1 min break between blocks',
             'Mix work moves: jog sprints, burpees, kettlebell swings (or DB), squat jumps',
-            '10 min cool-down + extensive stretching'
+            '5 min cool-down + extensive stretching'
           ],
-          notes: 'Pyramids teach pacing — you have to hold back early so you have something left at the top. RPE 7-8/10.'
+          notes: 'Pyramids teach pacing — you have to hold back early so you have something left at the top. RPE 7-8/10.',
+          timer: [
+            { name: 'Warm-up', sec: 600 },
+            ...rep([{ name: 'Work · 30s', sec: 30 }, { name: 'Rest · 30s', sec: 30 }], 4),
+            { name: 'Block break', sec: 60 },
+            ...rep([{ name: 'Work · 45s', sec: 45 }, { name: 'Rest · 45s', sec: 45 }], 3),
+            { name: 'Block break', sec: 60 },
+            ...rep([{ name: 'Work · 60s', sec: 60 }, { name: 'Rest · 60s', sec: 60 }], 2),
+            { name: 'Block break', sec: 60 },
+            ...rep([{ name: 'Work · 60s', sec: 60 }, { name: 'Rest · 60s', sec: 60 }], 2),
+            { name: 'Block break', sec: 60 },
+            ...rep([{ name: 'Work · 45s', sec: 45 }, { name: 'Rest · 45s', sec: 45 }], 3),
+            { name: 'Block break', sec: 60 },
+            ...rep([{ name: 'Work · 30s', sec: 30 }, { name: 'Rest · 30s', sec: 30 }], 4),
+            { name: 'Cool-down', sec: 300 }
+          ]
         },
         6: {
           type: 'strength', title: 'Lower body / long yoga (alt)', duration: 60,
@@ -955,7 +1401,14 @@
             '',
             'ODD weeks → LONG YOGA (60 min): full flow with deep hip work, inversions optional, long savasana'
           ],
-          notes: "Alternating gives your legs a break between cardio + lower-strength work. Pick one format if you'd rather not alternate."
+          notes: "Alternating gives your legs a break between cardio + lower-strength work. Pick one format if you'd rather not alternate.",
+          timer: [
+            { name: 'Yoga warm-up flow', sec: 600 },
+            { name: 'Standing series — warriors, triangle, half-moon', sec: 900 },
+            { name: 'Deep hip work — pigeon, frog, butterfly', sec: 900 },
+            { name: 'Inversions (optional)', sec: 600 },
+            { name: 'Long savasana', sec: 600 }
+          ]
         }
       }
     }
@@ -1197,11 +1650,32 @@
       : workout.notes;
     document.getElementById('modal-notes').textContent = notes;
 
+    // Show "Start workout" if this workout has a timer array
+    const startBtn = document.getElementById('start-timer-btn');
+    if (workout.timer && workout.timer.length) {
+      const totalSec = workout.timer.reduce((s, seg) => s + seg.sec, 0);
+      const totalMin = Math.round(totalSec / 60);
+      startBtn.textContent = `Start workout · ${totalMin} min`;
+      startBtn.style.display = 'flex';
+      startBtn.onclick = () => startWorkoutTimer(dateStr, workout);
+    } else {
+      startBtn.style.display = 'none';
+    }
+
+    // Show "Rest timer" button for strength workouts
+    const restBtn = document.getElementById('rest-timer-btn');
+    restBtn.style.display = workout.type === 'strength' ? 'inline-flex' : 'none';
+
+    // Leave timer mode if a different workout is opened
+    document.getElementById('modal-card').classList.remove('timer-mode');
+
     modal.classList.add('open');
   }
 
   function closeModal() {
     modal.classList.remove('open');
+    // Timer keeps running in the background; surface the resume pill instead.
+    if (typeof updateResumePill === 'function') updateResumePill();
   }
 
   document.getElementById('modal-close-btn').addEventListener('click', closeModal);
@@ -1211,8 +1685,429 @@
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
+    if (e.key !== 'Escape') return;
+    const restOverlay = document.getElementById('rest-overlay');
+    if (restOverlay && restOverlay.classList.contains('open')) {
+      closeRestTimer();
+    } else {
+      closeModal();
+    }
   });
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Workout timer — persisted in localStorage so screen lock/unlock works
+  // ─────────────────────────────────────────────────────────────────────
+
+  const TIMER_KEY = 'fitness-active-timer';
+  let timerInterval = null;
+  let wakeLock = null;
+  let audioCtx = null;
+
+  // State shape:
+  // { dateKey, workoutTitle, segments: [{name, sec}], idx, startedAt, pausedAccum, isPaused, pausedAt }
+
+  function loadTimerState() {
+    try {
+      const raw = localStorage.getItem(TIMER_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+
+  function saveTimerState(state) {
+    if (state) localStorage.setItem(TIMER_KEY, JSON.stringify(state));
+    else localStorage.removeItem(TIMER_KEY);
+  }
+
+  function elapsedInSegment(state) {
+    if (!state) return 0;
+    const now = Date.now();
+    let pausedAccum = state.pausedAccum || 0;
+    if (state.isPaused && state.pausedAt) {
+      pausedAccum += (now - state.pausedAt);
+    }
+    return Math.max(0, Math.floor((now - state.startedAt - pausedAccum) / 1000));
+  }
+
+  function startWorkoutTimer(dateKey, workout) {
+    const state = {
+      dateKey,
+      workoutTitle: workout.title,
+      workoutType: workout.type,
+      segments: workout.timer,
+      idx: 0,
+      startedAt: Date.now(),
+      pausedAccum: 0,
+      isPaused: false,
+      pausedAt: 0
+    };
+    saveTimerState(state);
+    requestWakeLock();
+    requestNotificationPermission();
+    enterTimerMode();
+    primeAudio();
+    runTick();
+    if (!timerInterval) timerInterval = setInterval(runTick, 250);
+  }
+
+  function enterTimerMode() {
+    document.getElementById('modal-card').classList.add('timer-mode');
+    document.getElementById('timer-end').classList.remove('active');
+    // Make sure the modal is open in case user opened via resume pill
+    modal.classList.add('open');
+  }
+
+  function exitTimerMode() {
+    document.getElementById('modal-card').classList.remove('timer-mode');
+  }
+
+  function endTimer({ closeModal: shouldClose = false } = {}) {
+    saveTimerState(null);
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    releaseWakeLock();
+    updateResumePill();
+    if (shouldClose) {
+      exitTimerMode();
+      closeModal();
+    }
+  }
+
+  function runTick() {
+    const state = loadTimerState();
+    if (!state) {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      return;
+    }
+    const seg = state.segments[state.idx];
+    if (!seg) {
+      showTimerComplete(state);
+      return;
+    }
+
+    const elapsed = elapsedInSegment(state);
+    const remaining = Math.max(0, seg.sec - elapsed);
+
+    // Advance to next segment when current is done
+    if (elapsed >= seg.sec) {
+      transitionToNext(state);
+      return;
+    }
+
+    renderTimer(state, seg, remaining);
+    updateResumePill();
+  }
+
+  function transitionToNext(state) {
+    const nextIdx = state.idx + 1;
+    const nextSeg = state.segments[nextIdx];
+    beep(nextSeg ? 880 : 1320);
+    vibrate(nextSeg ? [200, 100, 200] : [400, 100, 400, 100, 400]);
+    if (nextSeg) {
+      notify(`${nextSeg.name} · ${formatTime(nextSeg.sec)}`,
+             state.idx + 2 <= state.segments.length ? `Up next after this: ${state.segments[nextIdx + 1]?.name || 'finish'}` : '');
+    } else {
+      notify('Workout complete', 'Great work!');
+    }
+
+    state.idx = nextIdx;
+    state.startedAt = Date.now();
+    state.pausedAccum = 0;
+    state.isPaused = false;
+    state.pausedAt = 0;
+    saveTimerState(state);
+
+    if (!state.segments[nextIdx]) {
+      showTimerComplete(state);
+    }
+  }
+
+  function showTimerComplete(state) {
+    const segNameEl = document.getElementById('timer-segment-name');
+    const countdownEl = document.getElementById('timer-countdown');
+    segNameEl.textContent = '';
+    countdownEl.textContent = '';
+    document.getElementById('timer-segment-fill').style.width = '100%';
+    document.getElementById('timer-overall-fill').style.width = '100%';
+    document.getElementById('timer-up-next').textContent = '';
+    document.getElementById('timer-end').classList.add('active');
+    document.getElementById('timer-controls').style.display = 'none';
+    saveTimerState(null);
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    releaseWakeLock();
+    updateResumePill();
+  }
+
+  function renderTimer(state, seg, remaining) {
+    const segNameEl = document.getElementById('timer-segment-name');
+    const countdownEl = document.getElementById('timer-countdown');
+    const segFillEl = document.getElementById('timer-segment-fill');
+    const segBarEl = document.getElementById('timer-segment-bar');
+    const overallFillEl = document.getElementById('timer-overall-fill');
+    const upNextEl = document.getElementById('timer-up-next');
+    const posEl = document.getElementById('timer-segment-position');
+    const labelEl = document.getElementById('timer-workout-label');
+    const controlsEl = document.getElementById('timer-controls');
+    const pauseBtn = document.getElementById('timer-pause-btn');
+
+    segNameEl.textContent = seg.name;
+    countdownEl.textContent = formatTime(remaining);
+    countdownEl.classList.toggle('warn', remaining <= 5);
+    segBarEl.classList.toggle('warn', remaining <= 5);
+
+    const segProgress = ((seg.sec - remaining) / seg.sec) * 100;
+    segFillEl.style.width = `${segProgress}%`;
+
+    const totalSec = state.segments.reduce((s, x) => s + x.sec, 0);
+    const completedSec = state.segments.slice(0, state.idx).reduce((s, x) => s + x.sec, 0) + (seg.sec - remaining);
+    overallFillEl.style.width = `${(completedSec / totalSec) * 100}%`;
+
+    posEl.textContent = `${state.idx + 1} / ${state.segments.length}`;
+    labelEl.textContent = state.workoutTitle;
+
+    const nextSeg = state.segments[state.idx + 1];
+    upNextEl.replaceChildren();
+    if (nextSeg) {
+      upNextEl.appendChild(document.createTextNode('Up next:'));
+      const strong = document.createElement('strong');
+      strong.textContent = `${nextSeg.name} · ${formatTime(nextSeg.sec)}`;
+      upNextEl.appendChild(strong);
+    } else {
+      upNextEl.appendChild(document.createTextNode('Final segment'));
+    }
+
+    document.getElementById('timer-end').classList.remove('active');
+    controlsEl.style.display = 'grid';
+    pauseBtn.textContent = state.isPaused ? 'Resume' : 'Pause';
+    pauseBtn.classList.toggle('primary', state.isPaused);
+  }
+
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  // ── Timer controls ──
+  document.getElementById('timer-pause-btn').addEventListener('click', () => {
+    const state = loadTimerState();
+    if (!state) return;
+    if (state.isPaused) {
+      state.pausedAccum += (Date.now() - state.pausedAt);
+      state.isPaused = false;
+      state.pausedAt = 0;
+      requestWakeLock();
+    } else {
+      state.isPaused = true;
+      state.pausedAt = Date.now();
+      releaseWakeLock();
+    }
+    saveTimerState(state);
+    runTick();
+  });
+
+  document.getElementById('timer-skip-btn').addEventListener('click', () => {
+    const state = loadTimerState();
+    if (!state) return;
+    transitionToNext(state);
+  });
+
+  document.getElementById('timer-stop-btn').addEventListener('click', () => {
+    if (!confirm('End the workout?')) return;
+    endTimer({ closeModal: true });
+  });
+
+  document.getElementById('timer-end-close').addEventListener('click', () => {
+    exitTimerMode();
+    document.getElementById('timer-controls').style.display = 'grid';
+    closeModal();
+  });
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Rest timer (independent overlay for strength workouts)
+  // ─────────────────────────────────────────────────────────────────────
+
+  let restEndTime = 0;
+  let restInterval = null;
+
+  function openRestTimer(seconds = 60) {
+    restEndTime = Date.now() + seconds * 1000;
+    primeAudio();
+    requestWakeLock();
+    requestNotificationPermission();
+    document.getElementById('rest-overlay').classList.add('open');
+    tickRest();
+    if (!restInterval) restInterval = setInterval(tickRest, 250);
+  }
+
+  function tickRest() {
+    const remaining = Math.max(0, Math.ceil((restEndTime - Date.now()) / 1000));
+    document.getElementById('rest-time').textContent = formatTime(remaining);
+    if (remaining === 0) {
+      beep(1320);
+      vibrate([300, 100, 300]);
+      notify('Rest done', 'Back to it');
+      clearInterval(restInterval);
+      restInterval = null;
+    }
+  }
+
+  function closeRestTimer() {
+    document.getElementById('rest-overlay').classList.remove('open');
+    if (restInterval) { clearInterval(restInterval); restInterval = null; }
+    if (!loadTimerState()) releaseWakeLock();
+  }
+
+  document.getElementById('rest-timer-btn').addEventListener('click', () => openRestTimer(60));
+  document.getElementById('rest-add-btn').addEventListener('click', () => {
+    restEndTime += 15 * 1000;
+    if (!restInterval) restInterval = setInterval(tickRest, 250);
+    tickRest();
+  });
+  document.getElementById('rest-close-btn').addEventListener('click', closeRestTimer);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Wake Lock, audio, vibration, notifications
+  // ─────────────────────────────────────────────────────────────────────
+
+  async function requestWakeLock() {
+    try {
+      if ('wakeLock' in navigator && !wakeLock) {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      }
+    } catch (e) { /* iOS Safari < 16.4, etc. — silent */ }
+  }
+
+  function releaseWakeLock() {
+    if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+  }
+
+  // Reacquire wake lock when tab becomes visible again (browsers drop it on hide)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && loadTimerState()) {
+      requestWakeLock();
+      runTick();
+    }
+  });
+
+  // Generates a short beep without needing an audio file.
+  function primeAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (e) {}
+  }
+
+  function beep(freq = 880) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.frequency.value = freq;
+      osc.connect(gain).connect(audioCtx.destination);
+      const t = audioCtx.currentTime;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.35, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+      osc.start(t);
+      osc.stop(t + 0.55);
+    } catch (e) {}
+  }
+
+  function vibrate(pattern) {
+    if ('vibrate' in navigator) try { navigator.vibrate(pattern); } catch (e) {}
+  }
+
+  function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().catch(() => {});
+    }
+  }
+
+  function notify(title, body) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    try {
+      // Prefer SW registration so notifications survive page activity on installed PWA
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then((reg) => {
+          reg.showNotification(title, { body, icon: './icon.svg', tag: 'fitness-timer', renotify: true });
+        });
+      } else {
+        new Notification(title, { body, icon: './icon.svg' });
+      }
+    } catch (e) {}
+  }
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Resume pill — appears when a timer is running but modal is closed
+  // ─────────────────────────────────────────────────────────────────────
+
+  const resumePill = document.getElementById('resume-pill');
+  const resumePillLabel = document.getElementById('resume-pill-label');
+
+  function updateResumePill() {
+    const state = loadTimerState();
+    if (state && !modal.classList.contains('open')) {
+      const seg = state.segments[state.idx];
+      const remaining = seg ? Math.max(0, seg.sec - elapsedInSegment(state)) : 0;
+      resumePillLabel.textContent = seg ? `${seg.name} · ${formatTime(remaining)}` : 'Resume';
+      resumePill.classList.add('visible');
+    } else {
+      resumePill.classList.remove('visible');
+    }
+  }
+
+  resumePill.addEventListener('click', () => {
+    const state = loadTimerState();
+    if (!state) return;
+    enterTimerMode();
+    if (!timerInterval) timerInterval = setInterval(runTick, 250);
+    runTick();
+  });
+
+  // Restore timer on page load
+  (function restoreTimerOnLoad() {
+    const state = loadTimerState();
+    if (!state) return;
+    // Advance through any segments that finished while the page was closed
+    let advanced = true;
+    while (advanced) {
+      const fresh = loadTimerState();
+      if (!fresh) break;
+      const seg = fresh.segments[fresh.idx];
+      if (!seg) break;
+      const elapsed = elapsedInSegment(fresh);
+      if (elapsed >= seg.sec) {
+        // Skip past this segment without playing the beep (we don't want a burst)
+        const nextIdx = fresh.idx + 1;
+        fresh.idx = nextIdx;
+        fresh.startedAt = fresh.startedAt + seg.sec * 1000;
+        fresh.pausedAccum = 0;
+        saveTimerState(fresh);
+        if (!fresh.segments[nextIdx]) {
+          saveTimerState(null);
+          break;
+        }
+      } else {
+        advanced = false;
+      }
+    }
+    if (loadTimerState()) {
+      if (!timerInterval) timerInterval = setInterval(runTick, 250);
+      runTick();
+      updateResumePill();
+    }
+  })();
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Service worker registration (PWA)
+  // ─────────────────────────────────────────────────────────────────────
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
 </script>
 </body>
 </html>
