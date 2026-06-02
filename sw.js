@@ -1,5 +1,5 @@
 // Minimal service worker — caches the page shell for offline use.
-const CACHE = 'fitness-v1';
+const CACHE = 'fitness-v2';
 const ASSETS = [
   './',
   './index.html',

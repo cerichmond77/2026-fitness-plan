@@ -340,27 +340,67 @@
     border-radius: 3px;
   }
 
-  /* ─── Modal ─── */
+  /* ─── Workout page (was modal) ─── */
   .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(42, 37, 32, 0.55);
+    background: var(--bg);
     display: none;
-    align-items: center;
-    justify-content: center;
     z-index: 100;
-    padding: 24px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-direction: column;
   }
   .modal-backdrop.open { display: flex; }
-  .modal {
+  body.workout-open { overflow: hidden; }
+  body.workout-open .container { display: none; }
+
+  .workout-topbar {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 10;
+  }
+  body.workout-open .workout-topbar { padding-top: max(14px, env(safe-area-inset-top)); }
+  .back-btn {
     background: var(--paper);
-    border-radius: 12px;
-    max-width: 520px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 9px 16px 9px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .back-btn::before { content: "←"; font-size: 16px; line-height: 1; }
+  .back-btn:hover { background: var(--bg); }
+  .topbar-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .modal {
+    background: none;
+    max-width: 640px;
     width: 100%;
-    max-height: 85vh;
-    overflow-y: auto;
-    padding: 32px 36px;
-    box-shadow: 0 24px 60px rgba(42, 37, 32, 0.25);
+    margin: 0 auto;
+    padding: 32px 28px 80px;
+    box-shadow: none;
+    border-radius: 0;
   }
   .modal-eyebrow {
     font-size: 11px;
@@ -527,20 +567,27 @@
     font-size: 14px;
   }
 
-  /* Timer pane that replaces modal contents while a workout runs */
+  /* Timer panel — replaces the Start button while a workout runs */
   .timer-pane {
     display: none;
     flex-direction: column;
-    gap: 18px;
-    padding: 4px 0 8px;
+    gap: 16px;
+    padding: 22px 22px 18px;
+    margin: 8px 0 16px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(42, 37, 32, 0.08);
+    position: sticky;
+    top: 66px;
+    z-index: 5;
   }
   .timer-pane.active { display: flex; }
-  .modal.timer-mode .modal-eyebrow,
-  .modal.timer-mode #modal-title,
-  .modal.timer-mode .modal-date,
-  .modal.timer-mode #modal-video,
-  .modal.timer-mode .modal-block,
-  .modal.timer-mode #modal-close-btn { display: none; }
+  /* Active workout: hide the Start button, show the timer panel inline.
+     Steps, session and notes stay visible — user can scroll for reference.
+     !important defeats the inline display style applied to the buttons. */
+  .modal.timer-mode #start-timer-btn,
+  .modal.timer-mode #rest-timer-btn { display: none !important; }
   .modal.timer-mode .timer-pane { display: flex; }
 
   .timer-header {
@@ -881,7 +928,11 @@
 
 </div>
 
-<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
+<div class="modal-backdrop" id="modal" role="main">
+  <header class="workout-topbar">
+    <button class="back-btn" id="back-btn">Calendar</button>
+    <span class="topbar-label" id="topbar-label"></span>
+  </header>
   <div class="modal" id="modal-card">
     <div class="modal-eyebrow" id="modal-eyebrow"></div>
     <h2 id="modal-title"></h2>
@@ -889,24 +940,10 @@
 
     <a id="modal-video" class="guided-video" target="_blank" rel="noopener" style="display:none">Guided video session</a>
 
-    <div class="modal-block">
-      <h4>Session</h4>
-      <p id="modal-session"></p>
-    </div>
-    <div class="modal-block">
-      <h4>What to do</h4>
-      <ul id="modal-steps"></ul>
-      <button id="start-timer-btn" class="start-timer-btn" style="display:none">Start workout</button>
-      <button id="rest-timer-btn" class="rest-timer-btn" style="display:none">Rest timer · 60 sec</button>
-    </div>
-    <div class="modal-block">
-      <h4>Notes</h4>
-      <p id="modal-notes"></p>
-    </div>
+    <button id="start-timer-btn" class="start-timer-btn" style="display:none">Start workout</button>
+    <button id="rest-timer-btn" class="rest-timer-btn" style="display:none">Rest timer · 60 sec</button>
 
-    <button class="modal-close" id="modal-close-btn">Close</button>
-
-    <!-- Timer pane (shown when modal has .timer-mode) -->
+    <!-- Timer pane — appears in place of Start button when a workout is active -->
     <div class="timer-pane" id="timer-pane">
       <div class="timer-header">
         <span id="timer-workout-label"></span>
@@ -925,9 +962,24 @@
       <div class="timer-end" id="timer-end">
         <div class="big">Workout complete</div>
         <p>Nice work. Walk it off.</p>
-        <button class="timer-btn primary" id="timer-end-close">Close</button>
+        <button class="timer-btn primary" id="timer-end-close">Back to calendar</button>
       </div>
     </div>
+
+    <div class="modal-block">
+      <h4>Session</h4>
+      <p id="modal-session"></p>
+    </div>
+    <div class="modal-block">
+      <h4>What to do</h4>
+      <ul id="modal-steps"></ul>
+    </div>
+    <div class="modal-block">
+      <h4>Notes</h4>
+      <p id="modal-notes"></p>
+    </div>
+
+    <button class="modal-close" id="modal-close-btn" style="display:none">Close</button>
   </div>
 </div>
 
@@ -1546,7 +1598,10 @@
         if (workout.isDeload) {
           w.appendChild(el('span', 'deload-tag', 'deload'));
         }
-        w.addEventListener('click', () => openModal(key, workout));
+        w.addEventListener('click', () => {
+          history.pushState({ workoutPage: true }, '', `#/${key}`);
+          routeFromHash();
+        });
         cell.appendChild(w);
       }
 
@@ -1607,7 +1662,7 @@
 
   const modal = document.getElementById('modal');
 
-  function openModal(dateStr, workout) {
+  function renderWorkoutView(dateStr, workout) {
     const [y, m, d] = dateStr.split('-').map(Number);
     const date = new Date(y, m - 1, d);
     const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
@@ -1623,6 +1678,9 @@
       eyebrow.appendChild(el('span', 'modal-pill deload', 'Deload'));
     }
     eyebrow.appendChild(document.createTextNode(` Week ${workout.week} · Phase ${String(workout.phaseIdx + 1).padStart(2,'0')}`));
+
+    document.getElementById('topbar-label').textContent =
+      `Week ${workout.week} · Phase ${String(workout.phaseIdx + 1).padStart(2,'0')}`;
 
     document.getElementById('modal-title').textContent = workout.title;
     document.getElementById('modal-date').textContent = `${dayName}, ${dateLabel} · ${workout.duration} min`;
@@ -1666,33 +1724,76 @@
     const restBtn = document.getElementById('rest-timer-btn');
     restBtn.style.display = workout.type === 'strength' ? 'inline-flex' : 'none';
 
-    // Leave timer mode if a different workout is opened
-    document.getElementById('modal-card').classList.remove('timer-mode');
-
-    modal.classList.add('open');
+    // If this workout's timer is active, drop straight back into timer mode
+    const activeState = loadTimerState();
+    const card = document.getElementById('modal-card');
+    if (activeState && activeState.dateKey === dateStr) {
+      card.classList.add('timer-mode');
+      if (!timerInterval) timerInterval = setInterval(runTick, 250);
+      runTick();
+    } else {
+      card.classList.remove('timer-mode');
+    }
   }
 
+  // closeModal navigates back to the calendar. No click-outside-to-close —
+  // the workout page can only be left via the Back button or browser back.
+  // history.back() if we pushed the entry; otherwise (deep link / refresh)
+  // we replace the hash so we don't bounce off the page.
   function closeModal() {
+    if (history.state && history.state.workoutPage) {
+      history.back();
+    } else if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      hideWorkoutView();
+    } else {
+      hideWorkoutView();
+    }
+  }
+
+  function hideWorkoutView() {
     modal.classList.remove('open');
-    // Timer keeps running in the background; surface the resume pill instead.
+    document.body.classList.remove('workout-open');
     if (typeof updateResumePill === 'function') updateResumePill();
   }
 
-  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  function showWorkoutView() {
+    modal.classList.add('open');
+    document.body.classList.add('workout-open');
+    if (typeof updateResumePill === 'function') updateResumePill();
+    window.scrollTo(0, 0);
+  }
 
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
+  document.getElementById('back-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     const restOverlay = document.getElementById('rest-overlay');
     if (restOverlay && restOverlay.classList.contains('open')) {
       closeRestTimer();
-    } else {
+    } else if (modal.classList.contains('open')) {
       closeModal();
     }
   });
+
+  // Hash-based routing — clicking a day pushes "#/YYYY-MM-DD"; the browser back
+  // button just pops the hash and takes the user back to the calendar.
+  function routeFromHash() {
+    const m = window.location.hash.match(/^#\/(\d{4}-\d{2}-\d{2})$/);
+    if (m) {
+      const dateKey = m[1];
+      const workout = workoutMap.get(dateKey);
+      if (workout) {
+        renderWorkoutView(dateKey, workout);
+        showWorkoutView();
+        return;
+      }
+    }
+    hideWorkoutView();
+  }
+
+  window.addEventListener('hashchange', routeFromHash);
 
   // ─────────────────────────────────────────────────────────────────────
   // Workout timer — persisted in localStorage so screen lock/unlock works
@@ -1752,8 +1853,8 @@
   function enterTimerMode() {
     document.getElementById('modal-card').classList.add('timer-mode');
     document.getElementById('timer-end').classList.remove('active');
-    // Make sure the modal is open in case user opened via resume pill
-    modal.classList.add('open');
+    // If the workout page isn't open yet, the resume-pill path will route by
+    // hash and call this again from renderWorkoutView — nothing else to do here.
   }
 
   function exitTimerMode() {
@@ -2060,9 +2161,10 @@
   resumePill.addEventListener('click', () => {
     const state = loadTimerState();
     if (!state) return;
-    enterTimerMode();
-    if (!timerInterval) timerInterval = setInterval(runTick, 250);
-    runTick();
+    // Push the workout's hash and route. routeFromHash sees the active timer
+    // matches this dateKey and re-enters timer mode automatically.
+    history.pushState({ workoutPage: true }, '', `#/${state.dateKey}`);
+    routeFromHash();
   });
 
   // Restore timer on page load
@@ -2098,6 +2200,10 @@
       updateResumePill();
     }
   })();
+
+  // After timer state is restored, handle the URL hash — supports deep links,
+  // page refresh while in a workout, and the browser back/forward buttons.
+  routeFromHash();
 
   // ─────────────────────────────────────────────────────────────────────
   // Service worker registration (PWA)
