@@ -590,6 +590,71 @@
   .modal.timer-mode #rest-timer-btn { display: none !important; }
   .modal.timer-mode .timer-pane { display: flex; }
 
+  /* Completion toggle on the workout page */
+  .complete-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px 18px;
+    margin: 24px 0 0;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.12s ease;
+  }
+  .complete-toggle:hover { background: var(--bg); }
+  .complete-toggle .check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    color: transparent;
+  }
+  .complete-toggle.done {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .complete-toggle.done .check {
+    background: var(--paper);
+    border-color: var(--paper);
+    color: var(--accent);
+  }
+  .complete-toggle.done .check::before { content: "✓"; font-weight: 700; }
+
+  /* Completion badge on a calendar day cell */
+  .day .complete-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    pointer-events: none;
+    z-index: 2;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .day.completed .workout { opacity: 0.6; }
+
   .timer-header {
     display: flex;
     align-items: center;
@@ -978,6 +1043,11 @@
       <h4>Notes</h4>
       <p id="modal-notes"></p>
     </div>
+
+    <button class="complete-toggle" id="complete-toggle-btn" type="button">
+      <span class="check"></span>
+      <span id="complete-toggle-label">Mark complete</span>
+    </button>
 
     <button class="modal-close" id="modal-close-btn" style="display:none">Close</button>
   </div>
@@ -1580,7 +1650,12 @@
       const date = new Date(year, month, d);
       const key = dateKey(date);
       const cell = el('div', 'day');
+      cell.dataset.date = key;
       if (key === todayKey) cell.classList.add('today');
+      if (isCompleted(key)) {
+        cell.classList.add('completed');
+        cell.appendChild(el('div', 'complete-badge', '✓'));
+      }
 
       const num = el('div', 'day-num', String(d));
       if (key === todayKey) {
@@ -1734,6 +1809,11 @@
     } else {
       card.classList.remove('timer-mode');
     }
+
+    // Completion toggle
+    const completeBtn = document.getElementById('complete-toggle-btn');
+    completeBtn.onclick = () => setCompletion(dateStr, !isCompleted(dateStr));
+    updateToggleButton(dateStr);
   }
 
   // closeModal navigates back to the calendar. No click-outside-to-close —
@@ -1794,6 +1874,52 @@
   }
 
   window.addEventListener('hashchange', routeFromHash);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Workout completion — stored in localStorage as a Set of dateKeys
+  // ─────────────────────────────────────────────────────────────────────
+
+  const COMPLETED_KEY = 'fitness-completed';
+
+  function loadCompleted() {
+    try {
+      const raw = localStorage.getItem(COMPLETED_KEY);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch (e) { return new Set(); }
+  }
+  function saveCompleted(set) {
+    localStorage.setItem(COMPLETED_KEY, JSON.stringify([...set]));
+  }
+  function isCompleted(dateKey) {
+    return loadCompleted().has(dateKey);
+  }
+  function setCompletion(dateKey, completed) {
+    const set = loadCompleted();
+    if (completed) set.add(dateKey); else set.delete(dateKey);
+    saveCompleted(set);
+    updateCellCompletion(dateKey);
+    updateToggleButton(dateKey);
+  }
+  function updateCellCompletion(dateKey) {
+    const cell = document.querySelector(`.day[data-date="${dateKey}"]`);
+    if (!cell) return;
+    const done = isCompleted(dateKey);
+    cell.classList.toggle('completed', done);
+    let badge = cell.querySelector('.complete-badge');
+    if (done && !badge) {
+      cell.appendChild(el('div', 'complete-badge', '✓'));
+    } else if (!done && badge) {
+      badge.remove();
+    }
+  }
+  function updateToggleButton(dateKey) {
+    const btn = document.getElementById('complete-toggle-btn');
+    const label = document.getElementById('complete-toggle-label');
+    if (!btn || !label) return;
+    const done = isCompleted(dateKey);
+    btn.classList.toggle('done', done);
+    label.textContent = done ? 'Completed' : 'Mark complete';
+  }
 
   // ─────────────────────────────────────────────────────────────────────
   // Workout timer — persisted in localStorage so screen lock/unlock works
@@ -1935,6 +2061,8 @@
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     releaseWakeLock();
     updateResumePill();
+    // Auto-mark this workout as complete
+    setCompletion(state.dateKey, true);
   }
 
   function renderTimer(state, seg, remaining) {
