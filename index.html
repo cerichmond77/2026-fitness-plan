@@ -676,7 +676,7 @@
     font-size: 11px;
     color: var(--ink-soft);
     text-align: right;
-    min-width: 90px;
+    min-width: 92px;
     flex-shrink: 0;
     line-height: 1.3;
   }
@@ -685,6 +685,36 @@
     font-weight: 600;
     display: block;
     font-size: 13px;
+  }
+  .weight-last.clickable {
+    cursor: pointer;
+    padding: 6px 8px;
+    margin: -6px -8px;
+    border-radius: 6px;
+    transition: background 0.12s ease, color 0.12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .weight-last.clickable:hover,
+  .weight-last.clickable:active {
+    background: var(--strength-soft);
+  }
+  .weight-last.clickable:hover strong,
+  .weight-last.clickable:active strong { color: var(--strength); }
+  .weight-last .copy-hint {
+    display: block;
+    font-size: 10px;
+    color: var(--strength);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 1px;
+  }
+  .weight-input.flash {
+    animation: weight-flash 0.5s ease;
+  }
+  @keyframes weight-flash {
+    0%   { background: var(--strength); color: var(--paper); }
+    100% { background: var(--strength-soft); color: #1F3358; }
   }
   .weight-empty { color: #C5BDB0; }
 
@@ -1921,14 +1951,28 @@
       input.addEventListener('change', () => {
         setWeight(ex, dateStr, input.value);
         input.classList.toggle('has-value', !!input.value.trim());
-        // Refresh the "last" label on this row in case it now reflects today
-        const lastSpan = row.querySelector('.weight-last');
-        if (lastSpan) lastSpan.replaceChildren(...buildLastLabel(ex, dateStr));
       });
 
       row.appendChild(input);
 
       const last = el('span', 'weight-last');
+      const lastData = getLastWeightBefore(ex, dateStr);
+      if (lastData) {
+        last.classList.add('clickable');
+        last.setAttribute('role', 'button');
+        last.setAttribute('tabindex', '0');
+        last.setAttribute('aria-label', `Use ${lastData.weight} lb from ${fmtShortDate(lastData.date)}`);
+        const copyValue = () => {
+          input.value = lastData.weight;
+          input.classList.add('has-value', 'flash');
+          setWeight(ex, dateStr, lastData.weight);
+          setTimeout(() => input.classList.remove('flash'), 500);
+        };
+        last.addEventListener('click', copyValue);
+        last.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyValue(); }
+        });
+      }
       last.replaceChildren(...buildLastLabel(ex, dateStr));
       row.appendChild(last);
 
@@ -1943,7 +1987,7 @@
       return [span];
     }
     const top = el('strong', null, `${last.weight} lb`);
-    const sub = document.createTextNode(`last · ${fmtShortDate(last.date)}`);
+    const sub = el('span', 'copy-hint', `↩ tap to use · ${fmtShortDate(last.date)}`);
     return [top, sub];
   }
 
