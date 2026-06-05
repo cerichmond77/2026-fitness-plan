@@ -634,6 +634,60 @@
   }
   .complete-toggle.done .check::before { content: "✓"; font-weight: 700; }
 
+  /* Per-exercise weight log (strength workouts only) */
+  .weight-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .weight-row:last-child { border-bottom: none; }
+  .weight-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .weight-input {
+    width: 76px;
+    padding: 8px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 600;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .weight-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .weight-input.has-value {
+    background: var(--strength-soft);
+    border-color: rgba(61, 92, 140, 0.5);
+    color: #1F3358;
+  }
+  .weight-last {
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: right;
+    min-width: 90px;
+    flex-shrink: 0;
+    line-height: 1.3;
+  }
+  .weight-last strong {
+    color: var(--ink);
+    font-weight: 600;
+    display: block;
+    font-size: 13px;
+  }
+  .weight-empty { color: #C5BDB0; }
+
   /* Completion badge on a calendar day cell */
   .day .complete-badge {
     position: absolute;
@@ -1038,6 +1092,10 @@
     <div class="modal-block">
       <h4>What to do</h4>
       <ul id="modal-steps"></ul>
+    </div>
+    <div class="modal-block" id="weights-block" style="display:none">
+      <h4>Weights used (lb)</h4>
+      <div id="weights-list"></div>
     </div>
     <div class="modal-block">
       <h4>Notes</h4>
@@ -1741,6 +1799,154 @@
     label.textContent = done ? 'Completed' : 'Mark complete';
   }
 
+  // ─────────────────────────────────────────────────────────────────────
+  // Weight log — per-exercise history keyed by canonical exercise name.
+  // Stored as { "Goblet squat": [{ date, weight }], ... } in localStorage.
+  // ─────────────────────────────────────────────────────────────────────
+
+  const WEIGHTS_KEY = 'fitness-weights';
+
+  // Aliases collapse to one canonical name so "DB row" and "Dumbbell row"
+  // share the same history.
+  const EXERCISE_ALIASES = {
+    'Romanian DL': 'Romanian deadlift',
+    'DB row': 'Dumbbell row',
+    'Bulgarian split': 'Bulgarian split squat',
+    'Single-leg bridge': 'Glute bridge'
+  };
+  function canonicalExercise(name) {
+    return EXERCISE_ALIASES[name] || name;
+  }
+
+  function loadWeights() {
+    try { return JSON.parse(localStorage.getItem(WEIGHTS_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveWeights(data) {
+    localStorage.setItem(WEIGHTS_KEY, JSON.stringify(data));
+  }
+  function getWeightForDate(exerciseName, dateKey) {
+    const all = loadWeights();
+    const history = all[exerciseName] || [];
+    const entry = history.find(e => e.date === dateKey);
+    return entry ? entry.weight : '';
+  }
+  function getLastWeightBefore(exerciseName, dateKey) {
+    const all = loadWeights();
+    const history = all[exerciseName] || [];
+    // history is kept sorted by date ascending
+    const earlier = history.filter(e => e.date < dateKey && e.weight);
+    return earlier.length ? earlier[earlier.length - 1] : null;
+  }
+  function setWeight(exerciseName, dateKey, weight) {
+    const all = loadWeights();
+    if (!all[exerciseName]) all[exerciseName] = [];
+    const history = all[exerciseName];
+    const existingIdx = history.findIndex(e => e.date === dateKey);
+    const trimmed = (weight || '').trim();
+    if (trimmed) {
+      if (existingIdx >= 0) history[existingIdx].weight = trimmed;
+      else history.push({ date: dateKey, weight: trimmed });
+      history.sort((a, b) => a.date.localeCompare(b.date));
+    } else if (existingIdx >= 0) {
+      history.splice(existingIdx, 1);
+      if (history.length === 0) delete all[exerciseName];
+    }
+    saveWeights(all);
+  }
+
+  // Walk a step's text and return the canonical exercise names found in it.
+  function extractExercisesFromStep(text) {
+    const found = [];
+    let remaining = text;
+    while (remaining.length > 0) {
+      let earliest = { name: null, index: -1 };
+      for (const name of EXERCISE_KEYS) {
+        const idx = remaining.indexOf(name);
+        if (idx !== -1 && (earliest.index === -1 || idx < earliest.index)) {
+          earliest = { name, index: idx };
+        }
+      }
+      if (earliest.name === null) break;
+      const canonical = canonicalExercise(earliest.name);
+      if (!found.includes(canonical)) found.push(canonical);
+      remaining = remaining.substring(earliest.index + earliest.name.length);
+    }
+    return found;
+  }
+  function extractExercises(steps) {
+    const seen = new Set();
+    const ordered = [];
+    for (const step of steps) {
+      for (const name of extractExercisesFromStep(step)) {
+        if (!seen.has(name)) { seen.add(name); ordered.push(name); }
+      }
+    }
+    return ordered;
+  }
+
+  function fmtShortDate(dateKey) {
+    const [y, m, d] = dateKey.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  // Populate the weights block for the given workout date. Inputs auto-save
+  // on blur and apply a "has-value" class so logged sets are obvious at a
+  // glance.
+  function renderWeightsBlock(dateStr, workout) {
+    const block = document.getElementById('weights-block');
+    const list = document.getElementById('weights-list');
+    const exercises = workout.type === 'strength' ? extractExercises(workout.steps) : [];
+    if (exercises.length === 0) {
+      block.style.display = 'none';
+      list.replaceChildren();
+      return;
+    }
+    block.style.display = '';
+    list.replaceChildren();
+    for (const ex of exercises) {
+      const row = el('div', 'weight-row');
+      row.appendChild(el('span', 'weight-name', ex));
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.inputMode = 'decimal';
+      input.className = 'weight-input';
+      input.dataset.exercise = ex;
+      input.placeholder = '—';
+      const currentValue = getWeightForDate(ex, dateStr);
+      input.value = currentValue;
+      if (currentValue) input.classList.add('has-value');
+
+      input.addEventListener('change', () => {
+        setWeight(ex, dateStr, input.value);
+        input.classList.toggle('has-value', !!input.value.trim());
+        // Refresh the "last" label on this row in case it now reflects today
+        const lastSpan = row.querySelector('.weight-last');
+        if (lastSpan) lastSpan.replaceChildren(...buildLastLabel(ex, dateStr));
+      });
+
+      row.appendChild(input);
+
+      const last = el('span', 'weight-last');
+      last.replaceChildren(...buildLastLabel(ex, dateStr));
+      row.appendChild(last);
+
+      list.appendChild(row);
+    }
+  }
+
+  function buildLastLabel(exerciseName, dateStr) {
+    const last = getLastWeightBefore(exerciseName, dateStr);
+    if (!last) {
+      const span = el('span', 'weight-empty', 'no history');
+      return [span];
+    }
+    const top = el('strong', null, `${last.weight} lb`);
+    const sub = document.createTextNode(`last · ${fmtShortDate(last.date)}`);
+    return [top, sub];
+  }
+
   const calendar = document.getElementById('calendar');
   // June through November 2026 — program starts Monday, June 1
   for (let month = 5; month <= 10; month++) {
@@ -1862,6 +2068,9 @@
     const completeBtn = document.getElementById('complete-toggle-btn');
     completeBtn.onclick = () => setCompletion(dateStr, !isCompleted(dateStr));
     updateToggleButton(dateStr);
+
+    // Weights log (strength workouts only — handled inside the function)
+    renderWeightsBlock(dateStr, workout);
   }
 
   // closeModal navigates back to the calendar. No click-outside-to-close —
