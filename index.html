@@ -1693,6 +1693,54 @@
     return section;
   }
 
+  // ─────────────────────────────────────────────────────────────────────
+  // Workout completion — stored in localStorage as a Set of dateKeys.
+  // Declared BEFORE the calendar render so renderMonth can read it without
+  // hitting a temporal-dead-zone error (which the try/catch would swallow).
+  // ─────────────────────────────────────────────────────────────────────
+
+  const COMPLETED_KEY = 'fitness-completed';
+
+  function loadCompleted() {
+    try {
+      const raw = localStorage.getItem(COMPLETED_KEY);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch (e) { return new Set(); }
+  }
+  function saveCompleted(set) {
+    localStorage.setItem(COMPLETED_KEY, JSON.stringify([...set]));
+  }
+  function isCompleted(dateKey) {
+    return loadCompleted().has(dateKey);
+  }
+  function setCompletion(dateKey, completed) {
+    const set = loadCompleted();
+    if (completed) set.add(dateKey); else set.delete(dateKey);
+    saveCompleted(set);
+    updateCellCompletion(dateKey);
+    updateToggleButton(dateKey);
+  }
+  function updateCellCompletion(dateKey) {
+    const cell = document.querySelector(`.day[data-date="${dateKey}"]`);
+    if (!cell) return;
+    const done = isCompleted(dateKey);
+    cell.classList.toggle('completed', done);
+    let badge = cell.querySelector('.complete-badge');
+    if (done && !badge) {
+      cell.appendChild(el('div', 'complete-badge', '✓'));
+    } else if (!done && badge) {
+      badge.remove();
+    }
+  }
+  function updateToggleButton(dateKey) {
+    const btn = document.getElementById('complete-toggle-btn');
+    const label = document.getElementById('complete-toggle-label');
+    if (!btn || !label) return;
+    const done = isCompleted(dateKey);
+    btn.classList.toggle('done', done);
+    label.textContent = done ? 'Completed' : 'Mark complete';
+  }
+
   const calendar = document.getElementById('calendar');
   // June through November 2026 — program starts Monday, June 1
   for (let month = 5; month <= 10; month++) {
@@ -1874,52 +1922,6 @@
   }
 
   window.addEventListener('hashchange', routeFromHash);
-
-  // ─────────────────────────────────────────────────────────────────────
-  // Workout completion — stored in localStorage as a Set of dateKeys
-  // ─────────────────────────────────────────────────────────────────────
-
-  const COMPLETED_KEY = 'fitness-completed';
-
-  function loadCompleted() {
-    try {
-      const raw = localStorage.getItem(COMPLETED_KEY);
-      return new Set(raw ? JSON.parse(raw) : []);
-    } catch (e) { return new Set(); }
-  }
-  function saveCompleted(set) {
-    localStorage.setItem(COMPLETED_KEY, JSON.stringify([...set]));
-  }
-  function isCompleted(dateKey) {
-    return loadCompleted().has(dateKey);
-  }
-  function setCompletion(dateKey, completed) {
-    const set = loadCompleted();
-    if (completed) set.add(dateKey); else set.delete(dateKey);
-    saveCompleted(set);
-    updateCellCompletion(dateKey);
-    updateToggleButton(dateKey);
-  }
-  function updateCellCompletion(dateKey) {
-    const cell = document.querySelector(`.day[data-date="${dateKey}"]`);
-    if (!cell) return;
-    const done = isCompleted(dateKey);
-    cell.classList.toggle('completed', done);
-    let badge = cell.querySelector('.complete-badge');
-    if (done && !badge) {
-      cell.appendChild(el('div', 'complete-badge', '✓'));
-    } else if (!done && badge) {
-      badge.remove();
-    }
-  }
-  function updateToggleButton(dateKey) {
-    const btn = document.getElementById('complete-toggle-btn');
-    const label = document.getElementById('complete-toggle-label');
-    if (!btn || !label) return;
-    const done = isCompleted(dateKey);
-    btn.classList.toggle('done', done);
-    label.textContent = done ? 'Completed' : 'Mark complete';
-  }
 
   // ─────────────────────────────────────────────────────────────────────
   // Workout timer — persisted in localStorage so screen lock/unlock works
